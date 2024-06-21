@@ -1,0 +1,377 @@
+{
+	"info": {
+		"_postman_id": "fb23fee3-9311-4813-a2ac-534ab11bd92a",
+		"name": "SUMO API collection",
+		"description": "Hello there, we are the FLC TeamLinux and here we present the first alpha proposal for the Application Programming Interfaces of our SUMO-Simulation containerization.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36475101",
+		"_collection_link": "https://flcteamlinux.postman.co/workspace/FLCTeamLinux-Workspace~1773598f-6d34-498d-bca1-7b4f162da5ae/collection/36475101-fb23fee3-9311-4813-a2ac-534ab11bd92a?action=share&source=collection_link&creator=36475101"
+	},
+	"item": [
+		{
+			"name": "Initialize the Simulation",
+			"item": [
+				{
+					"name": "/init_simulation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/edges",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/edges",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"edges"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/nodes",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/nodes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"nodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/netconvert",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/netconvert",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"netconvert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/network",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/network",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"network"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/create_random_network",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/create_random_network?iterations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create_random_network"
+							],
+							"query": [
+								{
+									"key": "iterations",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/routes",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/routes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"routes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/additional_files",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/additional_files",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"additional_files"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/output_options",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"battery-output\": \"Battery.out.xml\",\r\n    \"battery-output.precision\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/output_options",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"output_options"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/battery_options",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"device.stationfinder.probability\":0.8,\r\n    \"device.stationfinder.rescueTime\":1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/battery_options",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"battery_options"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/create_config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/create_config",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"create_config"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "- GET /init_simulation -> initialize the environment for the (single) simulation, recreating (and eventually overwriting) the sim.'s files folder (/simulation). So in creates the layout for the:\n    \n    - simulation.edg.xml (a default test file)\n        \n    - simulation.nod.xml (a default test file)\n        \n    - simulation.net.xml (a default test file)\n        \n    - simulation.rou.xml (a default test file)\n        \n    - simulation.sumocfg (an xml-like file with inside of it the net-file, route-file and the time configuration).\n        \n- PUT /edges (upload .edg.xml)\n    \n- PUT /nodes (upload .rou.xml)\n    \n- GET /netconvert (creates the .net.xml file with the netconvert command)\n    \n- PUT /network (upload .net.xml)\n    \n- oppure più endpoint che supportino il caricamento di file in altri formati e le relative principali conversioni (netconvert) da effettuare sul server\n    \n- GET /create_random_network?iterations= (uses \"netgenerate --rand --rand.iterations=...\" to create a random .net.xml file)\n    \n- PUT /routes (overwrite existing .rou.xml file)\n    \n- PUT /additional_files\n    \n- POST /battery_options (will be updated in the .sumocfg file)\n    \n- POST /output_options (will be updated in the .sumocfg file)\n    \n- GET /create_config (check available files in the /simulation folder and generates the .sumocfg file)\n    \n\nPS. if no output is explicitly indicated from the user, a list of predefined outputs will be considered in the configuration"
+		},
+		{
+			"name": "Start Simulation",
+			"item": [
+				{
+					"name": "/start_simulation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/start_simulation?begin&end&step_length&n_steps",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"start_simulation"
+							],
+							"query": [
+								{
+									"key": "begin",
+									"value": null
+								},
+								{
+									"key": "end",
+									"value": null
+								},
+								{
+									"key": "step_length",
+									"value": null
+								},
+								{
+									"key": "n_steps",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/next_step",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/next_steps?n",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"next_steps"
+							],
+							"query": [
+								{
+									"key": "n",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stop_simulation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/stop_simulation",
+							"path": [
+								"stop_simulation"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "These APIs will start the simulation\n\n- GET /start_sim?begin=&end=&time_step=&step_size - start the simulation doing only the first step (if step_size=1), otherwise, computes N steps, with a value of -1 computes the simulation until the end of it (if end is specified)\n    \n- GET /next_step?n - do the n following steps of the sim.\n    \n- GET /stop_simulation - stops the simulation run (close)"
+		},
+		{
+			"name": "Output Management",
+			"item": [
+				{
+					"name": "/output/filename",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "/output/<filename>",
+							"path": [
+								"output",
+								"<filename>"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/outputs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "/outputs",
+							"path": [
+								"outputs"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "These APIs allow to return the output files from the Simulation, they can be requested anytime during the execution (ex. at time step=10)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
