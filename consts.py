@@ -10,6 +10,7 @@ SUMOADD="sumo.add.xml"
 SUMONET="sumo.net.xml"
 SUMOROUTE="sumo.rou.xml"
 OUTPUT_PATH="./output/"
+DEF_OUTPUT_OPTS={'netstate-dump','emission-output', 'chargingstations-output', 'statistic-output'}
 OUTPUT_FILES={'charging_stations.xml' ,'emission_output.xml','net_state_dump.xml', 'statistic_output.xml'}
 LAST_EXTENSIONS = {'xml'}
 PREV_EXTENSIONS = {'add', 'net', 'rou'}

@@ -56,69 +56,69 @@ def upload_stations():
 
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
+    reset=request.args.get('reset',default=False)
     if request.get_json()!=None and check_config_files():
-        with ET.parse(CFG_PATH + SUMOCFG) as tree:
-            root=tree.getroot()
-            if root.tag!="configuration":
-                return "Invalid configuration file"
-
-            battery_xml=ET.Element("battery")
-            battery_opts=request.get_json()
-            for key in battery_opts:
-                elem = ET.Element(key)
-                if key in FLOAT_BATT_PARAMS or key in TIME_BATT_PARAMS:
-                    if isinstance(battery_opts[key], float) or isinstance(battery_opts[key], int):
-                        elem.set('value', battery_opts[key])
-                        battery_xml.append(elem)
-                    else:
-                        return "Invalid value for " + key
-                elif key in BOOL_BATT_PARAMS:
-                    if isinstance(battery_opts[key], bool) or (battery_opts[key]=="t" or battery_opts[key]=="f"):
-                        elem.set('value', str(battery_opts[key]).lower())
-                        battery_xml.append(elem)
-                    else:
-                        return "Invalid value for "+key
-                elif key in STRING_BATT_PARAMS:
-                    if isinstance(battery_opts[key], str):
-                        elem.set('value', battery_opts[key])
-                        battery_xml.append(elem)
-                    else:
-                        return "Invalid value for "+key
-                elif key in STRARR_BATT_PARAMS:
-                    if len(battery_opts[key])>0:
-                        elem.set('value', ' '.join(battery_opts[key]))
-                        battery_xml.append(elem)
+        tree=ET.parse(CFG_PATH + SUMOCFG)
+        root=tree.getroot()
+        if root.tag!="configuration":
+            return "Invalid configuration file"
+        battery_xml=root.find('battery') if root.find('battery') is not None and not reset else ET.Element("battery")
+        battery_opts=request.get_json()
+        for key in battery_opts:
+            elem = ET.Element(key)
+            if key in FLOAT_BATT_PARAMS or key in TIME_BATT_PARAMS:
+                if isinstance(battery_opts[key], float) or isinstance(battery_opts[key], int):
+                    elem.set('value', str(battery_opts[key]))
+                    battery_xml.append(elem)
                 else:
-                    return "Invalid parameter "+key
-            root.remove(root.find("battery"))
+                    return "Invalid value for " + key
+            elif key in BOOL_BATT_PARAMS:
+                if isinstance(battery_opts[key], bool) or (battery_opts[key]=="t" or battery_opts[key]=="f"):
+                    elem.set('value', str(battery_opts[key]).lower())
+                    battery_xml.append(elem)
+                else:
+                    return "Invalid value for "+key
+            elif key in STRING_BATT_PARAMS:
+                if isinstance(battery_opts[key], str):
+                    elem.set('value', battery_opts[key])
+                    battery_xml.append(elem)
+                else:
+                    return "Invalid value for "+key
+            elif key in STRARR_BATT_PARAMS:
+                if len(battery_opts[key])>0:
+                    elem.set('value', ' '.join(battery_opts[key]))
+                    battery_xml.append(elem)
+            else:
+                return "Invalid parameter "+key
+        if reset and root.find('battery') is not None:
+            root.remove(root.get('battery'))
+        if root.find('battery') is None or reset:
             root.append(battery_xml)
-
-            tree.write(CFG_PATH + SUMOCFG)
+        tree.write(CFG_PATH + SUMOCFG,xml_declaration=True)
+        return "Battery options updated!"
     else:
         return "Invalid request, or configuration file not found"
 
 @app.route('/output_options', methods=['POST'])
 def output_options():
     if request.get_json()!=None and check_config_files():
-        with ET.parse(CFG_PATH + SUMOCFG) as tree:
-            root=tree.getroot()
-            if root.tag!="configuration":
-                return "Invalid configuration file"
-            output_xml=ET.Element("output")
-            output_opts=request.get_json()
-            for key in output_opts:
-                elem = ET.Element(key)
-                if key in OUTPUT_OPTS:
-                    if isinstance(output_opts[key], str):
-                        elem.set('value', output_opts[key])
-                        output_xml.append(elem)
-                    else:
-                        return "Invalid value for "+key
-                else:
-                    return "Invalid parameter "+key
-            root.remove(root.find("output"))
+        tree=ET.parse(CFG_PATH + SUMOCFG)
+        root=tree.getroot()
+        if root.tag!="configuration":
+            return "Invalid configuration file"
+        output_xml= root.find('output') if root.find('output') is not None else ET.Element("output")
+        output_opts=request.get_json()
+        for key in output_opts:
+            elem = ET.Element(key)
+            if key in OUTPUT_OPTS and key not in DEF_OUTPUT_OPTS:
+                elem.set('value', str(output_opts[key]))
+                output_xml.append(elem)
+            else:
+                return "Invalid parameter "+key
+        if root.find('output') is None:
             root.append(output_xml)
-            tree.write(CFG_PATH + SUMOCFG)
+        tree.write(CFG_PATH + SUMOCFG, xml_declaration=True)
+        return "Output options updated!"
     else:
         return "Invalid request, or configuration file not found"
 
@@ -153,7 +153,7 @@ def start_simulation():
 
 @app.route('/next_step')
 def next_step():
-    if request.args.get('n')!=none:
+    if request.args.get('n')!=None:
         #update simulation's step size
         n=request.args.get('n')
     return True
