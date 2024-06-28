@@ -29,8 +29,6 @@ result = subprocess.run("sumo "
                         "--chargingstations-output charging_stations.xml "
                         "--save-configuration test_simulation.sumocfg")
 
-# <chargingstations-output value="chargingstations.xml"/>
-
 libsumo.start(["sumo", "-c", "test_simulation.sumocfg"])
 
 for step in range(1000):
