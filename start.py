@@ -1,5 +1,6 @@
 import os
 
+import libsumo
 from flask import Flask,request
 from os import path
 from os import mkdir
@@ -8,61 +9,82 @@ import shutil
 from consts import *
 
 app = Flask(__name__)
-def allowed_file(filename):
-    if '.' in filename:
-        filename=filename.rsplit('.', 1)
-        if filename[1].lower() in LAST_EXTENSIONS:
-            return filename[0].rsplit('.', 1)[1].lower() in PREV_EXTENSIONS
 
 def check_config_files():
     return path.exists(CFG_PATH) and path.isfile(CFG_PATH + SUMOCFG) and path.isfile(CFG_PATH + SUMONET) and path.isfile(CFG_PATH + SUMOROUTE) and path.isfile(CFG_PATH + SUMOADD)
 
 @app.route('/network', methods=['PUT'])
 def upload_network():
-    if 'file' not in request.files:
+    if request.data is None:
         return "No file part"
-    file = request.files['file']
-    if file.filename == '':
-        return "No selected file"
-    if file and allowed_file(file.filename):
-        file.save(path.join(app.config['UPLOAD_FOLDER'], SUMONET))
-        return "File uploaded: "+file.filename
+    if len(request.data) > 1e9:
+        return "File too big"
+    file = request.get_data(as_text=True)
+    try:
+        file = ET.fromstring(file)
+    except ET.ParseError:
+        return "Invalid XML file"
+    if file.tag=="net" or file.tag=="network":
+        root=ET.ElementTree(file)
+        with open(path.join(app.config['UPLOAD_FOLDER'], SUMONET), 'wb') as f:
+            root.write(f, xml_declaration=True, encoding="utf-8")
+        return "File uploaded"
     return "File not allowed"
 
 @app.route('/routes', methods=['PUT'])
 def upload_routes():
-    if 'file' not in request.files:
+    if request.data is None:
         return "No file part"
-    file = request.files['file']
-    if file.filename == '':
-        return "No selected file"
-    if file and allowed_file(file.filename):
-        file.save(path.join(app.config['UPLOAD_FOLDER'], SUMOROUTE))
-        return "File uploaded: "+file.filename
+    if len(request.data) > 1e9:
+        return "File too big"
+    file = request.get_data(as_text=True)
+    try:
+        file = ET.fromstring(file)
+    except ET.ParseError:
+        return "Invalid XML file"
+    if file.tag=="routes":
+        root=ET.ElementTree(file)
+        with open(path.join(app.config['UPLOAD_FOLDER'], SUMOROUTE), 'wb') as f:
+            root.write(f, xml_declaration=True,encoding="utf-8")
+        return "File uploaded "
     return "File not allowed"
 
 @app.route('/charging_stations', methods=['PUT'])
 def upload_stations():
-    if 'file' not in request.files:
+    reset=request.args.get('reset',default=False)
+    if request.data is None:
         return "No file part"
-    file = request.files['file']
-    if file.filename == '':
-        return "No selected file"
-    if file and allowed_file(file.filename):
-        file.save(path.join(app.config['UPLOAD_FOLDER'], SUMOADD))
-
-        return "File uploaded: "+file.filename
+    if len(request.data)>1e9:
+        return "File too big"
+    file = request.get_data(as_text=True)
+    try:
+        file=ET.fromstring(file)
+    except ET.ParseError:
+        return "Invalid XML file"
+    if file.tag=="additional":
+        if reset or not path.exists(CFG_PATH + SUMOADD):
+            if path.exists(CFG_PATH + SUMOADD):
+                os.remove(CFG_PATH + SUMOADD)
+            root=ET.ElementTree(file)
+            with open(path.join(app.config['UPLOAD_FOLDER'], SUMOADD), 'wb') as f:
+                root.write(f, xml_declaration=True, encoding="utf-8")
+        else:
+            existree=ET.parse(CFG_PATH + SUMOADD)
+            oldstations=existree.getroot()
+            for station in file.iter('chargingStation'):
+                oldstations.append(station)
+            existree.write(CFG_PATH + SUMOADD, xml_declaration=True)
+        return "File uploaded"
     return "File not allowed"
 
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
-    reset=request.args.get('reset',default=False)
     if request.get_json()!=None and check_config_files():
         tree=ET.parse(CFG_PATH + SUMOCFG)
         root=tree.getroot()
         if root.tag!="configuration":
             return "Invalid configuration file"
-        battery_xml=root.find('battery') if root.find('battery') is not None and not reset else ET.Element("battery")
+        battery_xml=root.find('battery') if root.find('battery') is not None else ET.Element("battery")
         battery_opts=request.get_json()
         for key in battery_opts:
             elem = ET.Element(key)
@@ -90,9 +112,7 @@ def battery_options():
                     battery_xml.append(elem)
             else:
                 return "Invalid parameter "+key
-        if reset and root.find('battery') is not None:
-            root.remove(root.get('battery'))
-        if root.find('battery') is None or reset:
+        if root.find('battery') is None:
             root.append(battery_xml)
         tree.write(CFG_PATH + SUMOCFG,xml_declaration=True)
         return "Battery options updated!"

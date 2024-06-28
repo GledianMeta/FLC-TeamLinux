@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<additional></additional>
+<additional>
+    <chargingStation chargeDelay="100" chargeInTransit="100" power="100" efficiency="1" endPos="2" id="cS_2to19_0a" lane="2to19_0" startPos="10"/>
+
+</additional>
