@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-06-28 12:30:01 by Eclipse SUMO libsumo Version 1.20.0
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/libsumoConfiguration.xsd">
+<!-- generated on 2024-06-28 17:02:51 by Eclipse SUMO sumo Version 1.20.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="test_network.net.xml"/>
-        <route-files value="test_routes.rou.xml"/>
+        <net-file value=".\test_sim_generation\test_network.net.xml"/>
+        <route-files value=".\test_sim_generation\test_routes.rou.xml"/>
+        <additional-files value=".\test_sim_generation\sumo.add.xml"/>
     </input>
 
     <output>
-        <netstate-dump value="net_state_dump.xml"/>
-        <emission-output value="emission_output.xml"/>
-        <chargingstations-output value="charging_stations.xml"/>
-        <statistic-output value="statistic_output.xml"/>
+        <netstate-dump value=".\test_sim_generation\net_state_dump.xml"/>
+        <emission-output value=".\test_sim_generation\emission_output.xml"/>
+        <chargingstations-output value=".\test_sim_generation\charging_stations.xml"/>
+        <statistic-output value=".\test_sim_generation\statistic_output.xml"/>
     </output>
 
 </configuration>
 -->
 
 <statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
-    <performance clockBegin="1209290.70" clockEnd="1209297.84" clockDuration="7.15" traciDuration="0.42" realTimeFactor="139.96" vehicleUpdatesPerSecond="19580.13" personUpdatesPerSecond="0.00" begin="0.00" end="1000.00" duration="1000.00"/>
-    <vehicles loaded="1007" inserted="999" running="154" waiting="1"/>
+    <performance clockBegin="25298.60" clockEnd="25302.39" clockDuration="3.80" traciDuration="0.41" realTimeFactor="208.27" vehicleUpdatesPerSecond="28116.64" personUpdatesPerSecond="0.00" begin="0.00" end="791.00" duration="791.00"/>
+    <vehicles loaded="806" inserted="790" running="164" waiting="1"/>
     <teleports total="0" jam="0" yield="0" wrongLane="0"/>
     <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
     <persons loaded="0" running="0" jammed="0"/>

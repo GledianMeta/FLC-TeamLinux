@@ -8,6 +8,7 @@
     <input>
         <net-file value="test_network.net.xml"/>
         <route-files value="test_routes.rou.xml"/>
+        <additional-files value="sumo.add.xml"/>
     </input>
 
     <output>
