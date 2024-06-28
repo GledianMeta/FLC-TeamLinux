@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-06-27 02:18:56.010206 by randomTrips.py v1_20_0+0002-343658e7c64
+<!-- generated on 2024-06-28 12:30:01.276753 by randomTrips.py v1_20_0+0002-343658e7c64
 <configuration>
     <net-file value="test_network.net.xml"/>
     <route-file value="test_routes.rou.xml"/>
 </configuration>
 -->
 
-<!-- generated on 2024-06-27 02:18:55 by Eclipse SUMO duarouter Version 1.20.0
+<!-- generated on 2024-06-28 12:30:01 by Eclipse SUMO duarouter Version 1.20.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>

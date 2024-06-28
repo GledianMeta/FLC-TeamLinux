@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-06-27 02:18:56 by Eclipse SUMO sumo Version 1.20.0
+<!-- generated on 2024-06-28 12:30:01 by Eclipse SUMO sumo Version 1.20.0
 -->
 
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
@@ -9,5 +9,12 @@
         <net-file value="test_network.net.xml"/>
         <route-files value="test_routes.rou.xml"/>
     </input>
+
+    <output>
+        <netstate-dump value="net_state_dump.xml"/>
+        <emission-output value="emission_output.xml"/>
+        <chargingstations-output value="charging_stations.xml"/>
+        <statistic-output value="statistic_output.xml"/>
+    </output>
 
 </configuration>

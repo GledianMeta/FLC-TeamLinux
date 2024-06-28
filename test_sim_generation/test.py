@@ -1,9 +1,11 @@
 import os
 import subprocess
 import randomTrips
+import traci
+import libsumo
 
 SUMO_PATH = os.environ['SUMO_HOME']
-#RANDOM_TRIPS_PATH = SUMO_PATH + "\\tools\\randomTrips.py"
+# RANDOM_TRIPS_PATH = SUMO_PATH + "\\tools\\randomTrips.py"
 RANDOM_TRIPS_PATH = r"C:\Program Files (x86)\Eclipse\Sumo\tools\randomTrips.py"
 # this method returns a CompletedProcess instance, whose returncode attribute is 0 if there is no error
 # an alternative is to insert the attribute check=True; if an error occurs, an exception will be thrown (try-catch)
@@ -21,4 +23,17 @@ result = subprocess.run("python randomTrips.py " +
 result = subprocess.run("sumo "
                         "--net-file test_network.net.xml "
                         "--route-files test_routes.rou.xml "
+                        "--netstate-dump net_state_dump.xml "
+                        "--emission-output emission_output.xml "
+                        "--statistic-output statistic_output.xml "
+                        "--chargingstations-output charging_stations.xml "
                         "--save-configuration test_simulation.sumocfg")
+
+# <chargingstations-output value="chargingstations.xml"/>
+
+libsumo.start(["sumo", "-c", "test_simulation.sumocfg"])
+
+for step in range(1000):
+    libsumo.simulationStep()
+
+libsumo.close()
