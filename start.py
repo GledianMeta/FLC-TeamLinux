@@ -190,15 +190,19 @@ def init_simulation():
 @app.route('/start_simulation')
 def start_simulation():
     global sim_instance  # <------ Use global variable sim_instance
-    if check_config_files():
-        begin = request.args.get('begin', default=0)
-        end = request.args.get('end', default=None)
-        step_duration = request.args.get('step_duration', default=1)  # in seconds
-        n_steps = request.args.get('n_steps', default=-1)
-        sim_instance = Simulation(begin, end, step_duration, n_steps)  # <------ Create Simulation instance
-        return "Simulation started"
-    else:
-        return "Error starting simulation, configuration files not found"
+    try:
+        if check_config_files():
+            begin = request.args.get('begin', default=0)
+            end = request.args.get('end', default=None)
+            step_duration = request.args.get('step_duration', default=1)  # in seconds
+            n_steps = request.args.get('n_steps', default=-1)
+            sim_instance = Simulation(begin, end, step_duration, n_steps)  # <------ Create Simulation instance
+            return "Simulation started"
+        else:
+            return "Error starting simulation, configuration files not found"
+    except Exception as e:
+        #app.logger.error(f"Error starting simulation: {str(e)}")
+        return f"Error starting simulation: {str(e)}"
 
 
 @app.route('/next_step')
@@ -278,4 +282,4 @@ if __name__ == "__main__":
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
     app.config['UPLOAD_FOLDER'] = CFG_PATH
-    app.run(HOST, PORT)
+    app.run(HOST, port=8080)
