@@ -12,6 +12,4 @@
         <emission-output value="../output/emission_output.xml" />
         <chargingstations-output value="../output/charging_stations.xml" />
         <statistic-output value="../output/statistic_output.xml" />
-    <battery-output value="Battery.out.xml" /><battery-output.precision value="4" /></output>
-
-<battery><device.stationfinder.probability value="0.8" /><device.stationfinder.rescueTime value="1000" /></battery></configuration>
+    </configuration>

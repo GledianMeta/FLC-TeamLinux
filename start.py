@@ -1,25 +1,16 @@
-import json
 import os
-
 from flask import Flask, request, make_response
-from flask_compress import Compress
+import gzip
 import ujson
 from os import path
 from os import listdir
 from os import mkdir
-import gzip
 import xml.etree.ElementTree as ET
 import xmltodict
 import shutil
 from consts import *
 
 app = Flask(__name__)
-app.config["COMPRESS_REGISTER"] = False  # disable default compression of all eligible requests
-app.config["COMPRESS_LEVEL"] = COMPRESSION_LEVEL
-app.config['COMPRESS_ALGORITHM'] = 'deflate'
-compress = Compress()
-compress.init_app(app)
-
 def check_config_files():
     return path.exists(CFG_PATH) and path.isfile(CFG_PATH + SUMOCFG) and path.isfile(
         CFG_PATH + SUMONET) and path.isfile(CFG_PATH + SUMOROUTE) and path.isfile(CFG_PATH + SUMOADD)
@@ -207,7 +198,6 @@ def status():
 
 
 @app.route('/outputs')
-@compress.compressed()
 def results():
     if(len(request.args)==0):
         available = []
@@ -224,18 +214,14 @@ def results():
                 with open(OUTPUT_PATH+key+'.xml') as f:
                     xmldict=xmltodict.parse(f.read())
                     body.append({key:xmldict})
-        return body
-        """content=gzip.compress(ujson.dumps(body).encode('utf8'), COMPRESSION_LEVEL)
+        content=gzip.compress(ujson.dumps(body).encode('utf8'), COMPRESSION_LEVEL)
         response= make_response(content)
         response.headers['Content-length'] = len(content)
         response.headers['Content-Encoding'] = 'gzip'
-        return response"""
-    """normal jsonify response takes 47.11s,
-     gzip compression=6 takes 47.33s (>2MB), 
-     gzip compression=9 takes 48.16s (<2MB),
-     Compress BR takes 47.10s (18.2MB),
-     Compress GZIP takes 50s (1.98MB),
-     
+        return response
+    """normal jsonify 24.61s 18.21MB, 
+     gzip compression=9 takes 27.52s (1.98MB),
+     gzip compression=7 takes 27.91s (2.04MB)
      """
 
 
