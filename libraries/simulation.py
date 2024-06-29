@@ -38,14 +38,12 @@ class Simulation:
             self.semaphore.release()  # Release the semaphore if thread creation fails
 
 
-
     def simulation_step(self, n_steps):
         if self.is_busy():
             return "Simulation is busy"
         self.n_steps = n_steps
         self.do_steps(n_steps)
         return "Simulation step executed"
-
 
     def execute_steps(self, n_steps):
         try:
@@ -54,7 +52,6 @@ class Simulation:
         # This ensures that when all cars are done, or if something goes wrong, the track (semaphore) is free for someone else to use
         finally:
             self.semaphore.release()  # Ensure semaphore is released even if an exception occurs
-
 
     def execute_all_steps(self):
         try:

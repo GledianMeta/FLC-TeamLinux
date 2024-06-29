@@ -4,14 +4,13 @@ import os
 from flask import Flask, request, make_response
 from flask_compress import Compress
 import ujson
-from os import path
-from os import listdir
-from os import mkdir
+from os import path, listdir, mkdir
 import gzip
 import xml.etree.ElementTree as ET
 import xmltodict
 import shutil
 from consts import *
+from libraries.simulation import Simulation  # Importing Simulation class from simulation.py
 
 app = Flask(__name__)
 app.config["COMPRESS_REGISTER"] = False  # disable default compression of all eligible requests
@@ -20,6 +19,15 @@ app.config['COMPRESS_ALGORITHM'] = 'deflate'
 compress = Compress()
 compress.init_app(app)
 
+
+# Ensure the necessary directories and default files exist
+if not path.isdir(CFG_PATH):
+    mkdir(CFG_PATH)
+if not path.isdir(DEF_PATH) or not path.isfile(DEF_PATH + SUMOCFG) or not path.isfile(DEF_PATH + SUMONET) or not path.isfile(DEF_PATH + SUMOROUTE) or not path.isfile(DEF_PATH + SUMOADD):
+    raise FileNotFoundError("Default SUMO configuration files not found.")
+
+# Global Simulation instance
+sim_instance = None  # <------ Global variable to hold the instance of Simulation class
 
 def check_config_files():
     return path.exists(CFG_PATH) and path.isfile(CFG_PATH + SUMOCFG) and path.isfile(
@@ -181,38 +189,53 @@ def init_simulation():
 
 @app.route('/start_simulation')
 def start_simulation():
+    global sim_instance  # <------ Use global variable sim_instance
     if check_config_files():
         begin = request.args.get('begin', default=0)
         end = request.args.get('end', default=None)
         step_duration = request.args.get('step_duration', default=1)  # in seconds
         n_steps = request.args.get('n_steps', default=-1)
-        return True
+        sim_instance = Simulation(begin, end, step_duration, n_steps)  # <------ Create Simulation instance
+        return "Simulation started"
     else:
         return "Error starting simulation, configuration files not found"
 
 
 @app.route('/next_step')
 def next_step():
-    if request.args.get('n') != None:
-        # update simulation's step size
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
         n = request.args.get('n')
-    return True
+        sim_instance.simulation_step(int(n))  # Example call to simulation_step method of Simulation class
+        return "Next step taken"
+    else:
+        return "Simulation not yet started"
 
 
 @app.route('/stop_simulation')
 def stop_simulation():
-    return True
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
+        sim_instance.stop_simulation()
+        sim_instance = None  # <------ Reset sim_instance
+        return "Simulation stopped"
+    else:
+        return "Simulation not running"
 
 
 @app.route('/status')
 def status():
-    return True
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
+        return "Simulation running"
+    else:
+        return "Simulation not running"
 
 
 @app.route('/outputs')
 @compress.compressed()
 def results():
-    if (len(request.args) == 0):
+    if len(request.args) == 0:
         available = []
         if path.exists(OUTPUT_PATH):
             for file in listdir(OUTPUT_PATH):
