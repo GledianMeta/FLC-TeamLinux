@@ -20,9 +20,12 @@ app.config['COMPRESS_ALGORITHM'] = 'deflate'
 compress = Compress()
 compress.init_app(app)
 
+
 def check_config_files():
     return path.exists(CFG_PATH) and path.isfile(CFG_PATH + SUMOCFG) and path.isfile(
         CFG_PATH + SUMONET) and path.isfile(CFG_PATH + SUMOROUTE) and path.isfile(CFG_PATH + SUMOADD)
+
+
 
 
 @app.route('/network', methods=['PUT'])
@@ -94,7 +97,7 @@ def upload_stations():
 
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
-    if request.get_json() != None and check_config_files():
+    if request.get_json() is not None and check_config_files():
         tree = ET.parse(CFG_PATH + SUMOCFG)
         root = tree.getroot()
         if root.tag != "configuration":
@@ -137,7 +140,7 @@ def battery_options():
 
 @app.route('/output_options', methods=['POST'])
 def output_options():
-    if request.get_json() != None and check_config_files():
+    if request.get_json() is not None and check_config_files():
         tree = ET.parse(CFG_PATH + SUMOCFG)
         root = tree.getroot()
         if root.tag != "configuration":
@@ -191,7 +194,7 @@ def start_simulation():
 @app.route('/next_step')
 def next_step():
     if request.args.get('n') != None:
-        #update simulation's step size
+        # update simulation's step size
         n = request.args.get('n')
     return True
 
@@ -209,7 +212,7 @@ def status():
 @app.route('/outputs')
 @compress.compressed()
 def results():
-    if(len(request.args)==0):
+    if (len(request.args) == 0):
         available = []
         if path.exists(OUTPUT_PATH):
             for file in listdir(OUTPUT_PATH):
@@ -217,13 +220,13 @@ def results():
                     available.append(file.rsplit('.', 1)[0])
         return available
     else:
-        body=[]
-        files=[el.rsplit('.',1)[0] for el in listdir(OUTPUT_PATH) if el.endswith('.xml')]
+        body = []
+        files = [el.rsplit('.', 1)[0] for el in listdir(OUTPUT_PATH) if el.endswith('.xml')]
         for key in request.args:
             if key in files:
-                with open(OUTPUT_PATH+key+'.xml') as f:
-                    xmldict=xmltodict.parse(f.read())
-                    body.append({key:xmldict})
+                with open(OUTPUT_PATH + key + '.xml') as f:
+                    xmldict = xmltodict.parse(f.read())
+                    body.append({key: xmldict})
         return body
         """content=gzip.compress(ujson.dumps(body).encode('utf8'), COMPRESSION_LEVEL)
         response= make_response(content)
@@ -248,7 +251,7 @@ if __name__ == "__main__":
     if not path.isdir(CFG_PATH):
         mkdir(CFG_PATH)
     if not (path.isdir(DEF_PATH)) or not (path.isfile(DEF_PATH + SUMOCFG)) or not (
-    path.isfile(DEF_PATH + SUMONET)) or not (
+            path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
     app.config['UPLOAD_FOLDER'] = CFG_PATH
