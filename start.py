@@ -198,30 +198,23 @@ def init_simulation():
 @app.route('/start_simulation')
 def start_simulation():
     try:
-        if sim_instance.is_busy():
-            return error_400("Another simulation is running")
         if check_config_files():
             begin = request.args.get('begin', default=0, type=int)
             end = request.args.get('end', default=None, type=int)
             step_duration = request.args.get('step_duration', default=1, type=int)  # in seconds
             n_steps = request.args.get('n_steps', default=-1, type=int)
-            sim_instance.configure(begin, end, step_duration, n_steps)  # <------ Configure Simulation instance
-            return "Simulation started"
+            return "Simulation started" if sim_instance.configure(begin, end, step_duration, n_steps) else error_400("Another simulation is running") # <------ Configure Simulation instance
         else:
             return make_response("Error starting simulation, configuration files not found", 500)
     except Exception as e:
-        #app.logger.error(f"Error starting simulation: {str(e)}")
         return make_response(f"Error starting simulation: {str(e)}", 500)
 
 
 @app.route('/next_step')
 def next_step():
-    if not sim_instance.is_busy():
-        n = request.args.get('n', default=sim_instance.n_steps, type=int)
-        sim_instance.do_steps(int(n))  # Example call to simulation_step method of Simulation class
-        return "Next step taken"
-    else:
-        return error_400("Simulation is busy")
+    n = request.args.get('n', default=sim_instance.n_steps, type=int)
+    return "Next step taken" if sim_instance.do_steps(n) else error_400("Simulation is busy or not initialized (check /status for more)")
+
 
 
 @app.route('/stop_simulation')
