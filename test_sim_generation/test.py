@@ -31,4 +31,7 @@ result = subprocess.run("sumo "
                         "--chargingstations-output charging_stations.xml "
                         "--save-configuration test_simulation.sumocfg")
 
-sim = Simulation(0, 1000, 1, 1000)
+sim = Simulation()
+print(sim.is_busy())
+sim.configure(1, 1000, 1, 1000)
+print(sim.is_busy())
