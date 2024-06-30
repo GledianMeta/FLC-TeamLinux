@@ -28,7 +28,7 @@ def check_config_files():
 
 @app.route('/network', methods=['PUT'])
 def upload_network():
-    if not sim_instance.is_busy():
+    if not sim_instance.is_busy() and not sim_instance.is_started():
         if request.data is None:
             return error_400("No file part")
         if len(request.data) > 1e9:
@@ -45,12 +45,12 @@ def upload_network():
             return "File uploaded"
         return error_400("File not allowed")
     else:
-        return error_400("Simulation is running, cannot modify network!")
+        return error_400("Simulation started or running, cannot modify network!")
 
 
 @app.route('/routes', methods=['PUT'])
 def upload_routes():
-    if not sim_instance.is_busy():
+    if not sim_instance.is_busy() and not sim_instance.is_started():
         if request.data is None:
             return error_400("No file part")
         if len(request.data) > 1e9:
@@ -67,12 +67,12 @@ def upload_routes():
             return "File uploaded "
         return error_400("File not allowed")
     else:
-        return error_400("Simulation is running, cannot modify routes!")
+        return error_400("Simulation started or running, cannot modify routes!")
 
 
 @app.route('/charging_stations', methods=['PUT'])
 def upload_stations():
-    if not sim_instance.is_busy():
+    if not sim_instance.is_busy() and not sim_instance.is_started():
         reset = request.args.get('reset', default=False)
         if request.data is None:
             return error_400("No file part")
@@ -99,12 +99,12 @@ def upload_stations():
             return "File uploaded"
         return error_400("File not allowed")
     else:
-        return error_400("Simulation is running, cannot modify stations")
+        return error_400("Simulation started or running, cannot modify stations!")
 
 
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
-    if not sim_instance.is_busy():
+    if not sim_instance.is_busy() and not sim_instance.is_started():
         if request.get_json() is not None and check_config_files():
             tree = ET.parse(CFG_PATH + SUMOCFG)
             root = tree.getroot()
@@ -145,12 +145,12 @@ def battery_options():
         else:
             return error_400("Invalid request, or configuration file not found")
     else:
-        return error_400("Simulation is running, cannot modify battery options!")
+        return error_400("Simulation started or running, cannot modify battery options!")
 
 
 @app.route('/output_options', methods=['POST'])
 def output_options():
-    if not sim_instance.is_busy():
+    if not sim_instance.is_busy() and not sim_instance.is_started():
         if request.get_json() is not None and check_config_files():
             tree = ET.parse(CFG_PATH + SUMOCFG)
             root = tree.getroot()
@@ -172,7 +172,7 @@ def output_options():
         else:
             return error_400("Invalid request, or configuration file not found")
     else:
-        return error_400("Simulation is running, cannot modify output options!")
+        return error_400("Simulation started or running, cannot modify output options!")
 
 
 @app.route('/init_simulation')
@@ -180,6 +180,8 @@ def init_simulation():
     """resets simulation files"""
     if sim_instance.is_busy():
         return error_400("Another simulation is running, cannot reset files!")
+    if sim_instance.is_started():
+        return error_400("Another simulation has been started, please stop it before starting a new one!")
     if path.exists(CFG_PATH):
         shutil.rmtree(CFG_PATH)
     os.mkdir(CFG_PATH)
@@ -203,7 +205,8 @@ def start_simulation():
             end = request.args.get('end', default=None, type=int)
             step_duration = request.args.get('step_duration', default=1, type=int)  # in seconds
             n_steps = request.args.get('n_steps', default=-1, type=int)
-            return "Simulation started" if sim_instance.configure(begin, end, step_duration, n_steps) else error_400("Another simulation is running") # <------ Configure Simulation instance
+            return "Simulation started" if sim_instance.configure(begin, end, step_duration, n_steps) else error_400(
+                "Another simulation started or running")  # <------ Configure Simulation instance
         else:
             return make_response("Error starting simulation, configuration files not found", 500)
     except Exception as e:
@@ -213,23 +216,22 @@ def start_simulation():
 @app.route('/next_step')
 def next_step():
     n = request.args.get('n', default=sim_instance.n_steps, type=int)
-    return "Next step taken" if sim_instance.do_steps(n) else error_400("Simulation is busy or not initialized (check /status for more)")
-
+    return "Next step taken" if sim_instance.do_steps(n) else error_400(
+        "Simulation is busy or not initialized (check /status for more)")
 
 
 @app.route('/stop_simulation')
 def stop_simulation():
     if sim_instance:
-        sim_instance.stop_simulation()
-        return "Stopped Simulation"
+        return "Stopped Simulation" if sim_instance.stop_simulation() else "Simulation has not been started yet!"
 
 
 @app.route('/status')
 def status():
-    if sim_instance.is_busy():
-        return "Simulation running"
-    else:
-        return "Simulation not running"
+    return ujson.dumps({
+        "started": sim_instance.is_started(),
+        "running": not sim_instance.is_busy()
+    })
 
 
 @app.route('/outputs')
