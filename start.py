@@ -1,14 +1,14 @@
 import os
-from flask import Flask, request, make_response
-import gzip
+
 import ujson
-from os import path
-from os import listdir
-from os import mkdir
+from flask import Flask, request, make_response
+from os import path, listdir, mkdir
+import gzip
 import xml.etree.ElementTree as ET
 import xmltodict
 import shutil
 from consts import *
+from libraries.simulation import Simulation  # Importing Simulation class from simulation.py
 
 app = Flask(__name__)
 def check_config_files():
@@ -85,7 +85,7 @@ def upload_stations():
 
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
-    if request.get_json() != None and check_config_files():
+    if request.get_json() is not None and check_config_files():
         tree = ET.parse(CFG_PATH + SUMOCFG)
         root = tree.getroot()
         if root.tag != "configuration":
@@ -128,7 +128,7 @@ def battery_options():
 
 @app.route('/output_options', methods=['POST'])
 def output_options():
-    if request.get_json() != None and check_config_files():
+    if request.get_json() is not None and check_config_files():
         tree = ET.parse(CFG_PATH + SUMOCFG)
         root = tree.getroot()
         if root.tag != "configuration":
@@ -169,37 +169,57 @@ def init_simulation():
 
 @app.route('/start_simulation')
 def start_simulation():
-    if check_config_files():
-        begin = request.args.get('begin', default=0)
-        end = request.args.get('end', default=None)
-        step_duration = request.args.get('step_duration', default=1)  # in seconds
-        n_steps = request.args.get('n_steps', default=-1)
-        return True
-    else:
-        return "Error starting simulation, configuration files not found"
+    global sim_instance  # <------ Use global variable sim_instance
+    try:
+        if check_config_files():
+            begin = request.args.get('begin', default=0)
+            end = request.args.get('end', default=None)
+            step_duration = request.args.get('step_duration', default=1)  # in seconds
+            n_steps = request.args.get('n_steps', default=-1)
+            sim_instance = Simulation(begin, end, step_duration, n_steps)  # <------ Create Simulation instance
+            return "Simulation started"
+        else:
+            return "Error starting simulation, configuration files not found"
+    except Exception as e:
+        #app.logger.error(f"Error starting simulation: {str(e)}")
+        return f"Error starting simulation: {str(e)}"
 
 
 @app.route('/next_step')
 def next_step():
-    if request.args.get('n') != None:
-        #update simulation's step size
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
         n = request.args.get('n')
-    return True
+        sim_instance.simulation_step(int(n))  # Example call to simulation_step method of Simulation class
+        return "Next step taken"
+    else:
+        return "Simulation not yet started"
 
 
 @app.route('/stop_simulation')
 def stop_simulation():
-    return True
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
+        sim_instance.stop_simulation()
+        sim_instance = None  # <------ Reset sim_instance
+        return "Simulation stopped"
+    else:
+        return "Simulation not running"
 
 
 @app.route('/status')
 def status():
-    return True
+    global sim_instance  # <------ Use global variable sim_instance
+    if sim_instance:
+        return "Simulation running"
+    else:
+        return "Simulation not running"
 
 
 @app.route('/outputs')
+@compress.compressed()
 def results():
-    if(len(request.args)==0):
+    if len(request.args) == 0:
         available = []
         if path.exists(OUTPUT_PATH):
             for file in listdir(OUTPUT_PATH):
@@ -207,8 +227,8 @@ def results():
                     available.append(file.rsplit('.', 1)[0])
         return available
     else:
-        body=[]
-        files=[el.rsplit('.',1)[0] for el in listdir(OUTPUT_PATH) if el.endswith('.xml')]
+        body = []
+        files = [el.rsplit('.', 1)[0] for el in listdir(OUTPUT_PATH) if el.endswith('.xml')]
         for key in request.args:
             if key in files:
                 with open(OUTPUT_PATH+key+'.xml') as f:
@@ -234,7 +254,7 @@ if __name__ == "__main__":
     if not path.isdir(CFG_PATH):
         mkdir(CFG_PATH)
     if not (path.isdir(DEF_PATH)) or not (path.isfile(DEF_PATH + SUMOCFG)) or not (
-    path.isfile(DEF_PATH + SUMONET)) or not (
+            path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
     app.config['UPLOAD_FOLDER'] = CFG_PATH

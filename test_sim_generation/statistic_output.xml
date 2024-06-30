@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2024-06-29 15:29:14 by Eclipse SUMO libsumo Version 1.20.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/libsumoConfiguration.xsd">
+
+    <input>
+        <net-file value="test_network.net.xml"/>
+        <route-files value="test_routes.rou.xml"/>
+    </input>
+
+    <output>
+        <netstate-dump value="net_state_dump.xml"/>
+        <emission-output value="emission_output.xml"/>
+        <chargingstations-output value="charging_stations.xml"/>
+        <statistic-output value="statistic_output.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1000"/>
+        <step-length value="1"/>
+    </time>
+
+</configuration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">

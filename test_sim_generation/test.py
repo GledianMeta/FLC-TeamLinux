@@ -4,6 +4,8 @@ import randomTrips
 import traci
 import libsumo
 
+from libraries.simulation import Simulation
+
 SUMO_PATH = os.environ['SUMO_HOME']
 # RANDOM_TRIPS_PATH = SUMO_PATH + "\\tools\\randomTrips.py"
 RANDOM_TRIPS_PATH = r"C:\Program Files (x86)\Eclipse\Sumo\tools\randomTrips.py"
@@ -29,9 +31,4 @@ result = subprocess.run("sumo "
                         "--chargingstations-output charging_stations.xml "
                         "--save-configuration test_simulation.sumocfg")
 
-libsumo.start(["sumo", "-c", "test_simulation.sumocfg"])
-
-for step in range(1000):
-    libsumo.simulationStep()
-
-libsumo.close()
+sim = Simulation(0, 1000, 1, 1000)
