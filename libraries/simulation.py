@@ -9,22 +9,32 @@ class Simulation:
     def __init__(self):
         self.simulation_started = False
         self.kill_thread = False
-        self.exec_semaphore = threading.Lock()  # This ensures that only one thread can acquire the semaphore at a time, preventing concurrent execution of simulation steps.
-        self.kill_semaphore = threading.Lock()  # This ensures that only one thread at time can modify the self.kill_thread value
+        self.exec_semaphore = threading.Semaphore(
+            1)  # This ensures that only one thread can acquire the semaphore at a time, preventing concurrent execution of simulation steps.
 
     # Configures and starts the simulation
-    def configure(self, begin, end, step_duration, n_steps):
+    def configure(self, begin=0, end=None, step_duration=1, n_steps=-1, cfgpath=None):
         # Checks if the simulation is already running
         if self.is_busy() or self.is_started():
             return False
         self.n_steps = n_steps
-        self.kill_semaphore.acquire()
         self.kill_thread = False
-        self.kill_semaphore.release()
+        cmd = ["sumo", "-c"]
+        if cfgpath==None:
+            cmd.append(CFG_PATH + SUMOCFG)
+        else:
+            cmd.append(cfgpath)
+        if begin != 0:
+            cmd.append("-b")
+            cmd.append(f"{begin}")
+        if end is not None:
+            cmd.append("-e")
+            cmd.append(f"{end}")
+        if step_duration != 1:
+            cmd.append("--step-length")
+            cmd.append(f"{step_duration}")
+        libsumo.start(cmd)
         self.simulation_started = True
-        libsumo.start(
-            ["sumo", "-c", "." + CFG_PATH + SUMOCFG, "-b", str(begin), "-e", str(end), "--step-length",
-             str(step_duration)])
         self.do_steps(n_steps)
         return True
 
@@ -41,9 +51,7 @@ class Simulation:
             # "self.kill_thread" value and will wait to read a True value, so it will break and release also the first semaphore
             # TODO: is it better to avoid false read or allowing unwanted simulation Steps?
             if self.is_busy():
-                self.kill_semaphore.acquire()
                 self.kill_thread = True
-                self.kill_semaphore.release()
             libsumo.close()
             self.simulation_started = False
             return True
@@ -65,32 +73,27 @@ class Simulation:
                 return  # in case is_busy() check in do_steps() fails, re-check it in here and return.
             self.exec_semaphore.acquire()
             for step in range(n_steps):
-                self.kill_semaphore.acquire()
                 if not self.kill_thread:
                     libsumo.simulationStep()
-                    self.kill_semaphore.release()
                 else:  # if kill_thread==True, kill the thread by breaking from the loop, and set the kill_thread back to False
                     self.kill_thread = False
-                    self.kill_semaphore.release()
                     break
         # This ensures that when all cars are done, or if something goes wrong, the track (semaphore) is free for someone else to use
         finally:
             self.exec_semaphore.release()
             # Ensure semaphore is released even if an exception occurs
 
+
     def execute_all_steps(self):
         if self.is_busy():
             return  # ideally this must never be called when is_busy()=True thanks to the check in do_steps()
-        self.exec_semaphore.acquire()
         try:
+            self.exec_semaphore.acquire()
             while libsumo.simulation.getMinExpectedNumber() > 0:  # libsumo.simulation.getMinExpectedNumber() returns the number of cars expected to be on the track.
-                self.kill_semaphore.acquire()
                 if not self.kill_thread:
                     libsumo.simulationStep()  # This function moves the simulation forward by one step, making the cars move.
-                    self.kill_semaphore.release()
                 else:  # if kill_thread==True, kill the thread by breaking from the loop, and set the kill_thread back to False
                     self.kill_thread = False
-                    self.kill_semaphore.release()
                     break
         finally:
             self.exec_semaphore.release()

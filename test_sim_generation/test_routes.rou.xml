@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-06-30 15:22:35.594845 by randomTrips.py v1_20_0+0002-343658e7c64
+<!-- generated on 2024-07-01 08:55:52.109270 by randomTrips.py v1_20_0+0002-343658e7c64
 <configuration>
     <net-file value="test_network.net.xml"/>
     <route-file value="test_routes.rou.xml"/>
 </configuration>
 -->
 
-<!-- generated on 2024-06-30 15:22:35 by Eclipse SUMO duarouter Version 1.20.0
+<!-- generated on 2024-07-01 08:55:51 by Eclipse SUMO duarouter Version 1.20.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
@@ -22,7 +22,7 @@
 
     <time>
         <begin value="0"/>
-        <end value="3600"/>
+        <end value="3600.0"/>
     </time>
 
     <report>

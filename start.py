@@ -1,5 +1,6 @@
+#import logging
 import os
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from os import path, listdir, mkdir
 import gzip
 import xml.etree.ElementTree as ET
@@ -11,7 +12,6 @@ from libraries.simulation import Simulation  # Importing Simulation class from s
 
 app = Flask(__name__)
 sim_instance = Simulation()  # <- Create simulation instance
-
 
 def error_400(message):
     return make_response(message, 400)
@@ -228,9 +228,9 @@ def stop_simulation():
 
 @app.route('/status')
 def status():
-    return ujson.dumps({
+    return jsonify({
         "started": sim_instance.is_started(),
-        "running": not sim_instance.is_busy()
+        "running": sim_instance.is_busy()
     })
 
 
@@ -258,10 +258,10 @@ def results():
         response.headers['Content-length'] = len(content)
         response.headers['Content-Encoding'] = 'gzip'
         return response
-    """normal jsonify 24.61s 18.21MB, 
-     gzip compression=9 takes 27.52s (1.98MB),
-     gzip compression=7 takes 27.91s (2.04MB)
-     """
+"""normal jsonify 24.61s 18.21MB, 
+gzip compression=9 takes 27.52s (1.98MB),
+gzip compression=7 takes 27.91s (2.04MB)
+"""
 
 
 @app.route('/hc')
@@ -269,7 +269,7 @@ def health_check():
     return "I'm alive"
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     if not path.isdir(CFG_PATH):
         mkdir(CFG_PATH)
     if not (path.isdir(DEF_PATH)) or not (path.isfile(DEF_PATH + SUMOCFG)) or not (
@@ -277,4 +277,5 @@ if __name__ == "__main__":
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
     app.config['UPLOAD_FOLDER'] = CFG_PATH
+    #logging.basicConfig(filename=self.app_LOG, level=logging.DEBUG,filemode="w")
     app.run(HOST, PORT)
