@@ -12,10 +12,13 @@
     </input>
 
     <output>
+        <chargingstations-output value="../output/charging_stations.xml"/>
         <netstate-dump value="../output/net_state_dump.xml"/>
         <emission-output value="../output/emission_output.xml"/>
-        <chargingstations-output value="../output/charging_stations.xml"/>
         <statistic-output value="../output/statistic_output.xml"/>
+
+        <netstate-dump value="../output/net_state_dump.xml" />
+
     </output>
 
 </configuration>
