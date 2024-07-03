@@ -20,19 +20,27 @@ class Simulation:
         self.n_steps = n_steps
         self.kill_thread = False
         cmd = ["sumo", "-c"]
-        if cfgpath==None:
+        # check if the path exists
+        if cfgpath == None:
             cmd.append(CFG_PATH + SUMOCFG)
         else:
             cmd.append(cfgpath)
-        if begin != 0:
+        if begin >= 0:
             cmd.append("-b")
             cmd.append(f"{begin}")
+        else:  # if begin is negative, raise an error
+            raise ValueError("The begin time must be positive!")
         if end is not None:
-            cmd.append("-e")
-            cmd.append(f"{end}")
-        if step_duration != 1:
+            if end > begin:
+                cmd.append("-e")
+                cmd.append(f"{end}")
+            else:  # if end is less than begin, raise an error
+                raise ValueError("The end time must be greater than the begin time!")
+        if step_duration > 0:
             cmd.append("--step-length")
             cmd.append(f"{step_duration}")
+        else:  # if the step duration is negative, raise an error
+            raise ValueError("The step duration must be positive!")
         libsumo.start(cmd)
         self.simulation_started = True
         self.do_steps(n_steps)
@@ -82,7 +90,6 @@ class Simulation:
         finally:
             self.exec_semaphore.release()
             # Ensure semaphore is released even if an exception occurs
-
 
     def execute_all_steps(self):
         if self.is_busy():

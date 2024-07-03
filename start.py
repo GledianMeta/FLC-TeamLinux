@@ -209,6 +209,8 @@ def start_simulation():
                 "Another simulation started or running")  # <------ Configure Simulation instance
         else:
             return make_response("Error starting simulation, configuration files not found", 500)
+    except ValueError as e:
+        return make_response(f"Error starting simulation: {str(e)}", 400)
     except Exception as e:
         return make_response(f"Error starting simulation: {str(e)}", 500)
 
