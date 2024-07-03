@@ -182,6 +182,7 @@ def init_simulation():
         return error_400("Another simulation is running, cannot reset files!")
     if sim_instance.is_started():
         return error_400("Another simulation has been started, please stop it before starting a new one!")
+    check_def()
     if path.exists(CFG_PATH):
         shutil.rmtree(CFG_PATH)
     os.mkdir(CFG_PATH)
@@ -271,13 +272,8 @@ def health_check():
     return "I'm alive"
 
 
-if __name__=="__main__":
-    if not path.isdir(CFG_PATH):
-        mkdir(CFG_PATH)
+def check_def():
     if not (path.isdir(DEF_PATH)) or not (path.isfile(DEF_PATH + SUMOCFG)) or not (
             path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
-    app.config['UPLOAD_FOLDER'] = CFG_PATH
-    #logging.basicConfig(filename=self.app_LOG, level=logging.DEBUG,filemode="w")
-    app.run(HOST, PORT)
