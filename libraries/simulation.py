@@ -12,7 +12,8 @@ class Simulation:
         self.n_steps = None
         self.simulation_started = False
         self.kill_thread = False
-        self.exec_semaphore = threading.Semaphore(1)  # This ensures that only one thread can acquire the semaphore at a time, preventing concurrent execution of simulation steps.
+        self.exec_semaphore = threading.Semaphore(
+            1)  # This ensures that only one thread can acquire the semaphore at a time, preventing concurrent execution of simulation steps.
 
     # Configures and starts the simulation
     def configure(self, begin=0, end=None, step_duration=1, n_steps=-1, cfgpath=None):
@@ -34,7 +35,7 @@ class Simulation:
             raise ValueError("The begin time must be positive!")
         if end is not None:
             if end > begin:
-                cmd.append("-e")
+                cmd.append("-e")  # TODO: This end parameter seems not to work (SUMO bug?)
                 cmd.append(f"{end}")
             else:  # if end is less than begin, raise an error
                 raise ValueError("The end time must be greater than the begin time!")
@@ -49,8 +50,6 @@ class Simulation:
         self.simulation_started = True
         self.do_steps(n_steps)
         return True
-
-
 
     # Method which will be called to stop the simulation
     def stop_simulation(self):
@@ -77,8 +76,10 @@ class Simulation:
             return False
         if n_steps == -1:
             threading.Thread(target=self.execute_all_steps).start()
-        else:
+        elif n_steps > 0:
             threading.Thread(target=self.execute_steps, args=(n_steps,)).start()
+        else:
+            raise ValueError("The number of steps must be positive or -1!")
         return True
 
     def execute_steps(self, n_steps):
@@ -108,6 +109,8 @@ class Simulation:
                 else:  # if kill_thread==True, kill the thread by breaking from the loop, and set the kill_thread back to False
                     self.kill_thread = False
                     break
+        except:  # This catches the exception raised by getMinExpectedNumber() if the simulation has been stopped
+            pass
         finally:
             print("Simulation is done!")
             self.exec_semaphore.release()

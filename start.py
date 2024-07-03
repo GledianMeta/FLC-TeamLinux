@@ -219,9 +219,12 @@ def start_simulation():
 
 @app.route('/next_step')
 def next_step():
-    n = request.args.get('n', default=sim_instance.n_steps, type=int)
-    return "Next step taken" if sim_instance.do_steps(n) else error_400(
-        "Simulation is busy or not initialized (check /status for more)")
+    try:
+        n = request.args.get('n', default=sim_instance.n_steps, type=int)
+        return "Next step taken" if sim_instance.do_steps(n) else error_400(
+            "Simulation is busy or not initialized (check /status for more)")
+    except ValueError as e:
+        return make_response(f"Error taking next step: {str(e)}", 400)
 
 
 @app.route('/stop_simulation')
@@ -282,4 +285,4 @@ def check_def():
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
 
 
-#app.run(HOST, PORT)
+app.run(HOST, PORT)
