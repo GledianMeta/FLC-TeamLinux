@@ -285,4 +285,4 @@ def check_def():
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
 
 
-app.run(HOST, PORT)
+#app.run(HOST, PORT)
