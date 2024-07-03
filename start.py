@@ -1,4 +1,4 @@
-#import logging
+# import logging
 import os
 from flask import Flask, request, make_response, jsonify
 from os import path, listdir, mkdir
@@ -12,6 +12,7 @@ from libraries.simulation import Simulation  # Importing Simulation class from s
 
 app = Flask(__name__)
 sim_instance = Simulation()  # <- Create simulation instance
+
 
 def error_400(message):
     return make_response(message, 400)
@@ -261,6 +262,8 @@ def results():
         response.headers['Content-length'] = len(content)
         response.headers['Content-Encoding'] = 'gzip'
         return response
+
+
 """normal jsonify 24.61s 18.21MB, 
 gzip compression=9 takes 27.52s (1.98MB),
 gzip compression=7 takes 27.91s (2.04MB)
@@ -277,3 +280,6 @@ def check_def():
             path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
+
+
+#app.run(HOST, PORT)

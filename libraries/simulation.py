@@ -43,16 +43,8 @@ class Simulation:
             cmd.append(f"{step_duration}")
         else:  # if the step duration is negative, raise an error
             raise ValueError("The step duration must be positive!")
-
-        # Ensure the output directory exists
-        output_dir = os.path.join(os.path.dirname(__file__), '..', 'output')
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-
-        # Set output file path for SUMO
-        #output_file = os.path.join(output_dir, 'net_state_dump.xml')
-        #cmd.extend(["--netstate-dump", output_file])
-
+        cmd.append("--duration-log.statistics")  # This flag tells SUMO to log statistics about the simulation
+        cmd.append("true")
         libsumo.start(cmd)
         self.simulation_started = True
         self.do_steps(n_steps)
@@ -117,6 +109,7 @@ class Simulation:
                     self.kill_thread = False
                     break
         finally:
+            print("Simulation is done!")
             self.exec_semaphore.release()
 
     def is_busy(self):
