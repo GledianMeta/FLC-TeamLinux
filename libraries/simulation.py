@@ -1,3 +1,5 @@
+import os
+
 import libsumo
 import threading
 from consts import *
@@ -7,6 +9,7 @@ class Simulation:
 
     # Constructor
     def __init__(self):
+        self.n_steps = None
         self.simulation_started = False
         self.kill_thread = False
         self.exec_semaphore = threading.Semaphore(
@@ -41,10 +44,22 @@ class Simulation:
             cmd.append(f"{step_duration}")
         else:  # if the step duration is negative, raise an error
             raise ValueError("The step duration must be positive!")
+
+        # Ensure the output directory exists
+        output_dir = os.path.join(os.path.dirname(__file__), '..', 'output')
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        # Set output file path for SUMO
+        output_file = os.path.join(output_dir, 'net_state_dump.xml')
+        cmd.extend(["--netstate-dump", output_file])
+
         libsumo.start(cmd)
         self.simulation_started = True
         self.do_steps(n_steps)
         return True
+
+
 
     # Method which will be called to stop the simulation
     def stop_simulation(self):
