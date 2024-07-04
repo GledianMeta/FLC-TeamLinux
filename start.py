@@ -305,6 +305,8 @@ def results():
                 with open(OUTPUT_PATH + key + '.xml') as f:
                     xmldict = xmltodict.parse(f.read())
                     body.append({key: xmldict})
+            else:
+                return error_400(f"File {key}.xml not found")
         content = gzip.compress(ujson.dumps(body).encode('utf8'), COMPRESSION_LEVEL)
         response = make_response(content)
         response.headers['Content-length'] = len(content)
