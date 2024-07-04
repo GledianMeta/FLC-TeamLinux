@@ -52,7 +52,7 @@ OUTPUT_OPTS = {'write-license', 'output-prefix', 'human-readable', 'netstate-dum
 # field_names = re.findall(r'--\w+\-\w*(?:\.\w+\-*\w*)*', text)
 
 # VA of defined schemas
-XSD_ADD_PATH = "./schemas/addSchema.xsd"
-XSD_NET_PATH = "./schemas/netSchema.xsd"
-XSD_ROU_PATH = "./schemas/rouSchema.xsd"
+XSD_ADD_PATH = "./schemas/additional_file.xsd"
+XSD_NET_PATH = "./schemas/net_file.xsd"
+XSD_ROU_PATH = "./schemas/routes_file.xsd"
 
