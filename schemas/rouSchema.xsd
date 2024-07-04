@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+    <!-- Root element -->
+    <xs:element name="routes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="vehicle" type="VehicleType" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="xsi:noNamespaceSchemaLocation" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Vehicle element -->
+    <xs:complexType name="VehicleType">
+        <xs:sequence>
+            <xs:element name="route" type="RouteType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="depart" type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <!-- Route element -->
+    <xs:complexType name="RouteType">
+        <xs:attribute name="edges" type="xs:string" use="required"/>
+    </xs:complexType>
+
+</xs:schema>

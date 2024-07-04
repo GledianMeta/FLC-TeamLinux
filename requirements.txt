@@ -3,3 +3,4 @@ ujson>=5.10.0
 Flask>=3.0.3
 libsumo>=1.0.0
 sumolib>=1.0.0
+xmlschema>=3.3.1

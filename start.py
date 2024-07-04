@@ -1,5 +1,6 @@
 # import logging
 import os
+import xmlschema
 from flask import Flask, request, make_response, jsonify
 from os import path, listdir, mkdir
 import gzip
@@ -28,6 +29,7 @@ def check_config_files():
         CFG_PATH + SUMONET) and path.isfile(CFG_PATH + SUMOROUTE) and path.isfile(CFG_PATH + SUMOADD)
 
 
+
 @app.route('/network', methods=['PUT'])
 def upload_network():
     if not sim_instance.is_busy() and not sim_instance.is_started():
@@ -36,10 +38,21 @@ def upload_network():
         if len(request.data) > 1e9:
             return error_400("File too big")
         file = request.get_data(as_text=True)
+
         try:
+            # Carica lo schema XSD
+            schema = xmlschema.XMLSchema(XSD_NET_PATH)
+
+            # Valida il file XML
+            if not schema.is_valid(file):
+                return error_400("Invalid XML NETWORK file")
+
             file = ET.fromstring(file)
         except ET.ParseError:
             return error_400("Invalid XML file")
+        except xmlschema.XMLSchemaException as e:
+            return error_400(f"Schema validation error: {str(e)}")
+
         if file.tag == "net" or file.tag == "network":
             root = ET.ElementTree(file)
             with open(path.join(CFG_PATH, SUMONET), 'wb') as f:
@@ -58,15 +71,26 @@ def upload_routes():
         if len(request.data) > 1e9:
             return error_400("File too big")
         file = request.get_data(as_text=True)
+
         try:
+            # Carica lo schema XSD
+            schema = xmlschema.XMLSchema(XSD_ROU_PATH)
+
+            # Valida il file XML
+            if not schema.is_valid(file):
+                return error_400("Invalid XML ROUTES file")
+
             file = ET.fromstring(file)
         except ET.ParseError:
             return error_400("Invalid XML file")
+        except xmlschema.XMLSchemaException as e:
+            return error_400(f"Schema validation error: {str(e)}")
+
         if file.tag == "routes":
             root = ET.ElementTree(file)
             with open(path.join(CFG_PATH, SUMOROUTE), 'wb') as f:
                 root.write(f, xml_declaration=True, encoding="utf-8")
-            return "File uploaded "
+            return "File uploaded"
         return error_400("File not allowed")
     else:
         return error_400("Simulation started or running, cannot modify routes!")
@@ -81,10 +105,21 @@ def upload_stations():
         if len(request.data) > 1e9:
             return error_400("File too big")
         file = request.get_data(as_text=True)
+
         try:
+            # Carica lo schema XSD
+            schema = xmlschema.XMLSchema(XSD_ADD_PATH)
+
+            # Valida il file XML
+            if not schema.is_valid(file):
+                return error_400("Invalid XML ADDITIONAL file")
+
             file = ET.fromstring(file)
         except ET.ParseError:
             return error_400("Invalid XML file")
+        except xmlschema.XMLSchemaException as e:
+            return error_400(f"Schema validation error: {str(e)}")
+
         if file.tag == "additional":
             if reset or not path.exists(CFG_PATH + SUMOADD):
                 if path.exists(CFG_PATH + SUMOADD):
@@ -102,6 +137,8 @@ def upload_stations():
         return error_400("File not allowed")
     else:
         return error_400("Simulation started or running, cannot modify stations!")
+
+
 
 
 @app.route('/battery_options', methods=['POST'])

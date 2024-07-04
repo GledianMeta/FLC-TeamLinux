@@ -50,3 +50,9 @@ OUTPUT_OPTS = {'write-license', 'output-prefix', 'human-readable', 'netstate-dum
 
 # REGEX TO EXTRACT THIS FROM https://sumo.dlr.de/docs/sumo.html#output
 # field_names = re.findall(r'--\w+\-\w*(?:\.\w+\-*\w*)*', text)
+
+# VA of defined schemas
+XSD_ADD_PATH = "./schemas/addSchema.xsd"
+XSD_NET_PATH = "./schemas/netSchema.xsd"
+XSD_ROU_PATH = "./schemas/rouSchema.xsd"
+
