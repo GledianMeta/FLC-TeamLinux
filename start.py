@@ -29,7 +29,6 @@ def check_config_files():
         CFG_PATH + SUMONET) and path.isfile(CFG_PATH + SUMOROUTE) and path.isfile(CFG_PATH + SUMOADD)
 
 
-
 @app.route('/network', methods=['PUT'])
 def upload_network():
     if not sim_instance.is_busy() and not sim_instance.is_started():
@@ -61,13 +60,6 @@ def upload_network():
         return error_400("File not allowed")
     else:
         return error_400("Simulation started or running, cannot modify network!")
-
-
-
-
-
-
-
 
 
 @app.route('/routes', methods=['PUT'])
@@ -146,8 +138,6 @@ def upload_stations():
         return error_400("Simulation started or running, cannot modify stations!")
 
 
-
-
 @app.route('/battery_options', methods=['POST'])
 def battery_options():
     if not sim_instance.is_busy() and not sim_instance.is_started():
@@ -207,6 +197,8 @@ def output_options():
             for key in output_opts:
                 elem = ET.Element(key)
                 if key in OUTPUT_OPTS and key not in DEF_OUTPUT_OPTS:
+                    if isinstance(output_opts[key], str):
+                        output_opts[key] = path.join("." + OUTPUT_PATH, key.replace("-", "_") + ".xml")
                     elem.set('value', str(output_opts[key]))
                     output_xml.append(elem)
                 else:
