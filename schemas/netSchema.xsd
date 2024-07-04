@@ -1,39 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/your-schema"
+           xmlns="http://example.com/your-schema"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
+    <!-- Definition of the root element "net" -->
     <xs:element name="net">
         <xs:complexType>
             <xs:sequence>
+                <!-- Mandatory child elements in sequence -->
                 <xs:element name="location" type="LocationType"/>
                 <xs:element name="edge" type="EdgeType" maxOccurs="unbounded"/>
                 <xs:element name="junction" type="JunctionType" maxOccurs="unbounded"/>
                 <xs:element name="connection" type="ConnectionType" maxOccurs="unbounded"/>
             </xs:sequence>
+
+            <!-- Attributes of the "net" element -->
             <xs:attribute name="version" type="xs:string" use="required"/>
             <xs:attribute name="junctionCornerDetail" type="xs:integer" use="optional"/>
             <xs:attribute name="limitTurnSpeed" type="xs:decimal" use="optional"/>
-            <xs:attribute name="xsi:noNamespaceSchemaLocation" type="xs:string" use="optional"/>
+
+            <!-- Restrict any additional attributes on the "net" element -->
+            <xs:anyAttribute processContents="strict"/>
         </xs:complexType>
     </xs:element>
 
+    <!-- Definition of complex type "LocationType" -->
     <xs:complexType name="LocationType">
+        <!-- Attributes of "LocationType" -->
         <xs:attribute name="netOffset" type="xs:string" use="required"/>
         <xs:attribute name="convBoundary" type="xs:string" use="required"/>
         <xs:attribute name="origBoundary" type="xs:string" use="required"/>
         <xs:attribute name="projParameter" type="xs:string" use="required"/>
     </xs:complexType>
 
+    <!-- Definition of complex type "EdgeType" -->
     <xs:complexType name="EdgeType">
         <xs:sequence>
+            <!-- Mandatory child elements in sequence -->
             <xs:element name="lane" type="LaneType" maxOccurs="unbounded"/>
         </xs:sequence>
+        <!-- Attributes of "EdgeType" -->
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="function" type="xs:string" use="optional"/>
     </xs:complexType>
 
+    <!-- Definition of complex type "LaneType" in the same schema -->
     <xs:complexType name="LaneType">
+        <!-- Attributes of "LaneType" -->
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="index" type="xs:integer" use="required"/>
         <xs:attribute name="speed" type="xs:decimal" use="required"/>
@@ -41,10 +56,13 @@
         <xs:attribute name="shape" type="xs:string" use="required"/>
     </xs:complexType>
 
+    <!-- Definition of complex type "JunctionType" -->
     <xs:complexType name="JunctionType">
         <xs:sequence>
+            <!-- Mandatory child elements in sequence -->
             <xs:element name="request" type="RequestType" maxOccurs="unbounded"/>
         </xs:sequence>
+        <!-- Attributes of "JunctionType" -->
         <xs:attribute name="id" type="xs:string" use="required"/>
         <xs:attribute name="type" type="xs:string" use="required"/>
         <xs:attribute name="x" type="xs:decimal" use="required"/>
@@ -54,14 +72,19 @@
         <xs:attribute name="shape" type="xs:string" use="optional"/>
     </xs:complexType>
 
+    <!-- Definition of complex type "RequestType" -->
     <xs:complexType name="RequestType">
+        <!-- Attributes of "RequestType" -->
         <xs:attribute name="index" type="xs:integer" use="required"/>
         <xs:attribute name="response" type="xs:string" use="required"/>
         <xs:attribute name="foes" type="xs:string" use="required"/>
         <xs:attribute name="cont" type="xs:integer" use="required"/>
     </xs:complexType>
 
+
+    <!-- Definition of complex type "ConnectionType" -->
     <xs:complexType name="ConnectionType">
+        <!-- Attributes of "ConnectionType" -->
         <xs:attribute name="from" type="xs:string" use="required"/>
         <xs:attribute name="to" type="xs:string" use="required"/>
         <xs:attribute name="fromLane" type="xs:integer" use="required"/>
