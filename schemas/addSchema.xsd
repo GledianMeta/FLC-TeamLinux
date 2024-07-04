@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified"
-           attributeFormDefault="unqualified"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+           attributeFormDefault="unqualified">
 
     <!-- Root element -->
     <xs:element name="additional">
@@ -10,7 +9,6 @@
             <xs:sequence>
                 <!-- Since the <additional> element is empty, we don't define any child elements here -->
             </xs:sequence>
-            <xs:anyAttribute processContents="strict"/>
         </xs:complexType>
     </xs:element>
 
