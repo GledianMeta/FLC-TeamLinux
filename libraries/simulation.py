@@ -12,8 +12,9 @@ class Simulation:
         self.n_steps = None
         self.simulation_started = False
         self.kill_thread = False
-        self.exec_semaphore = threading.Semaphore(
-            1)  # This ensures that only one thread can acquire the semaphore at a time, preventing concurrent execution of simulation steps.
+        self.exec_semaphore = threading.Semaphore(1)
+        # This ensures that only one thread can acquire the semaphore at a time,
+        # preventing concurrent execution of simulation steps.
 
     # Configures and starts the simulation
     def configure(self, begin=0, end=None, step_duration=1, n_steps=-1, cfgpath=None):

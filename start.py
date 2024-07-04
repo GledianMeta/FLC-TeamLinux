@@ -11,6 +11,7 @@ from consts import *
 from libraries.simulation import Simulation  # Importing Simulation class from simulation.py
 
 app = Flask(__name__)
+
 sim_instance = Simulation()  # <- Create simulation instance
 
 
@@ -41,7 +42,7 @@ def upload_network():
             return error_400("Invalid XML file")
         if file.tag == "net" or file.tag == "network":
             root = ET.ElementTree(file)
-            with open(path.join(app.config['UPLOAD_FOLDER'], SUMONET), 'wb') as f:
+            with open(path.join(CFG_PATH, SUMONET), 'wb') as f:
                 root.write(f, xml_declaration=True, encoding="utf-8")
             return "File uploaded"
         return error_400("File not allowed")
@@ -63,7 +64,7 @@ def upload_routes():
             return error_400("Invalid XML file")
         if file.tag == "routes":
             root = ET.ElementTree(file)
-            with open(path.join(app.config['UPLOAD_FOLDER'], SUMOROUTE), 'wb') as f:
+            with open(path.join(CFG_PATH, SUMOROUTE), 'wb') as f:
                 root.write(f, xml_declaration=True, encoding="utf-8")
             return "File uploaded "
         return error_400("File not allowed")
@@ -89,7 +90,7 @@ def upload_stations():
                 if path.exists(CFG_PATH + SUMOADD):
                     os.remove(CFG_PATH + SUMOADD)
                 root = ET.ElementTree(file)
-                with open(path.join(app.config['UPLOAD_FOLDER'], SUMOADD), 'wb') as f:
+                with open(path.join(CFG_PATH, SUMOADD), 'wb') as f:
                     root.write(f, xml_declaration=True, encoding="utf-8")
             else:
                 existree = ET.parse(CFG_PATH + SUMOADD)
@@ -243,8 +244,8 @@ def status():
 
 @app.route('/outputs')
 def results():
-    if sim_instance.is_busy():
-        return error_400("sim_instance is running, wait until the end of it to get outputs")
+    if sim_instance.is_busy() or sim_instance.is_started():
+        return error_400("The simulation has been started, wait until the end of it to get outputs")
     if len(request.args) == 0:
         available = []
         if path.exists(OUTPUT_PATH):
@@ -285,4 +286,4 @@ def check_def():
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
 
 
-#app.run(HOST, PORT)
+app.run(HOST, PORT)
