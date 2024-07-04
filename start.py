@@ -40,11 +40,11 @@ def upload_network():
         file = request.get_data(as_text=True)
 
         try:
-            # Carica lo schema XSD
+            # Upload the NET XSD schema
             schema = xmlschema.XMLSchema(XSD_NET_PATH)
 
             # Valida il file XML
-            if not schema.is_valid(file):
+            if not schema.is_valid(request.data):
                 return error_400("Invalid XML NETWORK file")
 
             file = ET.fromstring(file)
@@ -61,6 +61,13 @@ def upload_network():
         return error_400("File not allowed")
     else:
         return error_400("Simulation started or running, cannot modify network!")
+
+
+
+
+
+
+
 
 
 @app.route('/routes', methods=['PUT'])

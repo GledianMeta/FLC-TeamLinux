@@ -6486,7 +6486,7 @@
     <connection from=":1074_0" to="-1075" fromLane="0" toLane="0" dir="r" state="M"/>
     <connection from=":1074_1" to="-1575" fromLane="0" toLane="0" dir="l" state="M"/>
     <connection from=":1074_2" to="1598" fromLane="0" toLane="0" dir="t" state="M"/>
-    <connection from=":1074_3" to="1598" fromLane="0" toLane="0" dir="r" state="M"></connection>
+    <connection from=":1074_3" to="1598" fromLane="0" toLane="0" dir="r" state="M"/>
     <connection from=":1074_4" to="-1075" fromLane="0" toLane="0" dir="R" state="M"/>
     <connection from=":1074_5" to="-1575" fromLane="0" toLane="0" via=":1074_9_0" dir="t" state="m"/>
     <connection from=":1074_9" to="-1575" fromLane="0" toLane="0" dir="t" state="M"/>
