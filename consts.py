@@ -12,6 +12,7 @@ OUTPUT_PATH = "./output/"
 DEF_OUTPUT_OPTS = {'netstate-dump', 'emission-output', 'chargingstations-output', 'statistic-output'}
 COMPRESSION_LEVEL = 8
 LAST_EXTENSIONS = {'xml'}
+ADD_BATT_PARAMS=[]
 PREV_EXTENSIONS = {'add', 'net', 'rou'}
 FLOAT_BATT_PARAMS = {'device.stationfinder.probability', 'device.stationfinder.reserveFactor',
                      'device.stationfinder.emptyThreshold', 'device.stationfinder.maxChargePower',

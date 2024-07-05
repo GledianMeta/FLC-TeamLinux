@@ -150,10 +150,11 @@ def battery_options():
             battery_opts = request.get_json()
             for key in battery_opts:
                 elem = ET.Element(key)
-                if key in FLOAT_BATT_PARAMS or key in TIME_BATT_PARAMS:
+                if (key in FLOAT_BATT_PARAMS or key in TIME_BATT_PARAMS) and key not in ADD_BATT_PARAMS:
                     if isinstance(battery_opts[key], float) or isinstance(battery_opts[key], int):
                         elem.set('value', str(battery_opts[key]))
                         battery_xml.append(elem)
+                        ADD_BATT_PARAMS.append(key)
                     else:
                         return error_key(key)
                 elif key in BOOL_BATT_PARAMS:
@@ -183,6 +184,12 @@ def battery_options():
     else:
         return error_400("Simulation started or running, cannot modify battery options!")
 
+@app.route('/get_sumocfg')
+def get_config():
+    if path.exists(CFG_PATH + SUMOCFG):
+        with open(CFG_PATH + SUMOCFG) as f:
+            return xmltodict.parse(f.read())
+    return error_400("Configuration file not found")
 
 @app.route('/output_options', methods=['POST'])
 def output_options():
@@ -197,10 +204,11 @@ def output_options():
             for key in output_opts:
                 elem = ET.Element(key)
                 if key in OUTPUT_OPTS and key not in DEF_OUTPUT_OPTS:
-                    if isinstance(output_opts[key], str):
+                    if isinstance(output_opts[key], str) and key != "output-prefix":
                         output_opts[key] = path.join("." + OUTPUT_PATH, key.replace("-", "_") + ".xml")
                     elem.set('value', str(output_opts[key]))
                     output_xml.append(elem)
+                    DEF_OUTPUT_OPTS.add(key)
                 else:
                     return error_key(key)
             if root.find('output') is None:
@@ -322,6 +330,3 @@ def check_def():
             path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
         raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
-
-
-app.run(HOST, PORT)

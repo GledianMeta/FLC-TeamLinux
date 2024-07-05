@@ -38,6 +38,7 @@ class Simulation:
             if end > begin:
                 cmd.append("-e")  # TODO: This end parameter seems not to work (SUMO bug?)
                 cmd.append(f"{end}")
+                self.n_steps = end - begin
             else:  # if end is less than begin, raise an error
                 raise ValueError("The end time must be greater than the begin time!")
         if step_duration > 0:
@@ -49,7 +50,7 @@ class Simulation:
         cmd.append("true")
         libsumo.start(cmd)
         self.simulation_started = True
-        self.do_steps(n_steps)
+        self.do_steps(self.n_steps)
         return True
 
     # Method which will be called to stop the simulation
