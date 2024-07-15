@@ -329,4 +329,4 @@ def check_def():
     if not (path.isdir(DEF_PATH)) or not (path.isfile(DEF_PATH + SUMOCFG)) or not (
             path.isfile(DEF_PATH + SUMONET)) or not (
             path.isfile(DEF_PATH + SUMOROUTE) or not (path.isfile((DEF_PATH + SUMOADD)))):
-        raise FileNotFoundError("Default sumo configuration files not found,  machine is broken")
+        raise FileNotFoundError("Default sumo configuration files not found, machine is broken")
