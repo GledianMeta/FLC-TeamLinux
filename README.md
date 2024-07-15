@@ -59,19 +59,21 @@ The simulation can be started and stopped at any time, and the output files can 
     - 400 Bad Request: if the body is not a JSON object, the JSON object or the battery parameters are not correct, or if the simulation has already been started (the user cannot set the battery options during the started simulation)
 
 ### POST /output_options
-- sets the output options in the simulation
-- body: a JSON object with all the output parameters (and their value) that the user wants to set. If no output is explicitly indicated from the user, a list of predefined outputs will be considered in the configuration. Here is an example of the body:
+- sets the output options in the simulation: by default, the following outputs are already inserted:
+  - raw dump: info about vehicles positions;
+  - emission output: info about electrical/fuel vehicles emissions; 
+  - statistic output: general statistics of the simulation like the number of vehicles inserted/waiting, average speeds, traffic and public transport statistics;
+  - charging station output: info about charging stations like power, efficiency, number of recharged vehicles and delivered energy.
+- body: a JSON object with all the output parameters (and their value) that the user wants to set. Here is an example of the body:
     ```json
     {
-        "output_raw_dump": true,
-        "output_emission": true,
-        "output_statistics": true,
-        "output_charging_station": true
+        "battery_output": true,
+        "collision_output": true,
     }
     ```
 - returns:
     - 200 OK: if the output options are set successfully
-    - 400 Bad Request: if the body is not a JSON object, the JSON object or the output parameters are not correct, or if the simulation has already been started (the user cannot set the output options during the started simulation) 
+    - 400 Bad Request: if the body empty, not a JSON object, the JSON object or the output parameters are not correct, or if the simulation has already been started (the user cannot set the output options during the started simulation) 
 
 
 ## Simulation Management
@@ -86,19 +88,37 @@ The simulation can be started and stopped at any time, and the output files can 
 - returns:
     - 200 OK: if the simulation is started successfully
     - 400 Bad Request: if the simulation has already been started or if the query parameters are not correct
- 
+    - 500 Internal Server Error: if the simulation fails to start
 
+### GET /next_step
+- performs the next N steps of the simulation or all the remaining steps (if N=-1)
+- query parameters:
+    - n: the number of steps to compute
+- returns:
+    - 200 OK: if the next steps are computed successfully
+    - 400 Bad Request: if the simulation has not been started or if there is an error in the execution of the next steps
 
-GET /start_sim?begin=&end=&time_step=&step_size - start the simulation doing only the first step (if step_size=1), otherwise, computes N steps, with a value of -1 computes the simulation until the end of it (if end is specified)
- GET /next_step?n - do the n following steps of the sim.
- GET /status - returns the actual status of the simulation
- GET /stop_simulation - stops the simulation run (close)
- 
- Output Management
- These APIs allow to return the output files from the Simulation, they can be requested anytime during the execution (ex. at time step=10)
- 
- GET /outputs - returns a list of predifined outputs at the current step of the simulation. They include:
-    raw dump, with info about vehicles positions;
-    emission output, with info about electrical/fuel vehicles emissions;
-    statistic output, with general statistics of the simulation like the number of vehicles inserted/waiting, average speeds, traffic and public transport statistics;
-    charging station output, with info about charging stations like power, efficiency, number of recharged vehicles and delivered energy.
+### GET /status
+- returns the actual status of the simulation, so if it has been started or not and if it is running or not
+- returns:
+    - 200 OK: a JSON object with the start status and the running status. Here is an example of the body:
+    ```json
+    {
+        "started": true,
+        "running": true
+    }
+    ```
+
+### GET /stop_simulation
+- stops the simulation run
+- returns:
+    - 200 OK: if the simulation is stopped successfully
+    - 400 Bad Request: if the simulation has not been started yet
+
+## Output Management
+
+### GET /outputs
+- returns the predefined outputs and the output requested by the user (using POST /output_options) at the end of the simulation
+- returns:
+    - 200 OK: if the outputs are returned successfully
+    - 400 Bad Request: if the simulation has been started and not stopped yet
