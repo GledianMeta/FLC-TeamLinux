@@ -1,24 +1,35 @@
 # SUMO-Simulation APIs for Containerization
- Hello there, we are the FLC TeamLinux and here we present the final version of our APIs for SUMO-Simulation containerization. 
+We are the FLC TeamLinux and here we present the final version of our APIs for SUMO-Simulation containerization. 
  
-These APIs allow the user to interact with the SUMO simulation environment, by uploading configuration files, starting the simulation, and retrieving the output files.
+These APIs allow the user to interact with the SUMO simulation environment, by uploading configuration files, starting a simulation, and retrieving the output files.
 
-In the context of the SUMO simulation, some default files are already present and can be overwritten by the user by means of the APIs, in order to customize the simulation environment.
+In the context of the SUMO simulation, some default files are already present and can be overwritten by the user by means of the APIs, in order to customize the simulation environment. Those files are described in the GET /init_simulation. Otherwise, the user can upload it's own custom network, the routes, the charging stations, and set the battery and output options before starting the simulation.
 
-The user can upload the network, the routes, the charging stations, and set the battery and output options.
+A typical flow of the simulation would be:
+1. initialize a new environment;
+2. update your custom configuration files and battery and output options;
+3. start simulation choosing between a direct execution straight from <i>begin</i> to <i>end</i>, or step by step (with a certain step size);
+4. stop the simulation when you think you are done and check the results with the output.
 
-The simulation can be started and stopped at any time, and the output files can be retrieved at the end of the simulation.
+The simulation can be started and stopped at any time, <b> but the output files can be retrieved only at the end of the simulation.</b>
+
+## Dockerization and startup
+
+In order to make them available anywhere with a really simple deployment procedure. the simulation tools have been encapsulated in a Docker container defined in the <a href="https://github.com/GledianMeta/FLC-TeamLinux/blob/main/Dockerfile">Dockerfile</a>. In this way, any user with a Docker engine running on it's computer will be able to reach and use these tools over it's local IP address, at port 8080.
+Steps for configuration:
+1. Clone this repository in your working directory ```git clone https://github.com/GledianMeta/FLC-TeamLinux```;
+2. With a running docker engine, execute ```docker build -t <TAG_NAME_YOU_PREFER>``` to build the container (it will take a while);
+3. To start the container, use ```docker run -p 8080:8080 [-d/-it] <TAG_NAME_YOU_PREFER>``` (-it is for interactive output, while -d means "detach output from stdout").
 
 
 ## Configuration of the simulation
 
 ### GET /init_simulation
-- initializes the environment for the simulation, overwriting the simulation's files with the default ones which are:
-  - simulation.edg.xml
-  - simulation.nod.xml
-  - simulation.net.xml
-  - simulation.rou.xml
-  - simulation.sumocfg (an xml-like file with inside of it the net-file, route-file and the time configuration).
+- initializes the environment for the simulation, overwriting the actual configuration files with the default ones which are:
+  - sumo.net.xml
+  - sumo.rou.xml
+  - sumo.add.xml (additional, empty file for charging stations)
+  - sumo.sumocfg (an xml-like file with inside of it the net-file, route-file and the time configuration).
 - returns:
     - 200 OK: if the initialization is successful
     - 400 Bad Request: if a simulation has already been initialized
