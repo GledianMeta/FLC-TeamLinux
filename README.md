@@ -11,7 +11,7 @@ A typical flow of the simulation would be:
 3. start simulation choosing between a direct execution straight from <i>begin</i> to <i>end</i>, or step by step (with a certain step size);
 4. stop the simulation when you think you are done and check the results with the output.
 
-The simulation can be started and stopped at any time, <b> but the output files can be retrieved only at the end of the simulation.</b>
+The simulation can be started and stopped at any time, <b> but the output files can be retrieved only once it has beed stopped.</b>
 
 ## Dockerization and startup
 
