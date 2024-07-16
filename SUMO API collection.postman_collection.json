@@ -4,317 +4,339 @@
 		"name": "SUMO API collection",
 		"description": "Hello there, we are the FLC TeamLinux and here we present the first alpha proposal for the Application Programming Interfaces of our SUMO-Simulation containerization.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "36475101",
-		"_collection_link": "https://flcteamlinux.postman.co/workspace/FLCTeamLinux-Workspace~1773598f-6d34-498d-bca1-7b4f162da5ae/collection/36475101-fb23fee3-9311-4813-a2ac-534ab11bd92a?action=share&source=collection_link&creator=36475101"
+		"_exporter_id": "32922856",
+		"_collection_link": "https://flcteamlinux.postman.co/workspace/FLCTeamLinux-Workspace~1773598f-6d34-498d-bca1-7b4f162da5ae/collection/36475101-fb23fee3-9311-4813-a2ac-534ab11bd92a?action=share&source=collection_link&creator=32922856"
 	},
 	"item": [
 		{
 			"name": "Initialize the Simulation",
 			"item": [
 				{
-					"name": "/init_simulation",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": ""
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/edges",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/edges",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"edges"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/nodes",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/nodes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"nodes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/netconvert",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/netconvert",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"netconvert"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/network",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/network",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"network"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/create_random_network",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/create_random_network?iterations",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"create_random_network"
-							],
-							"query": [
-								{
-									"key": "iterations",
-									"value": null
+					"name": "Update the battery options",
+					"item": [
+						{
+							"name": "/battery_options",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"device.stationfinder.probability\":0.8,\r\n    \"device.stationfinder.rescueTime\":1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/battery_options",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"battery_options"
+									]
 								}
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "Configures battery options for the simulation. It requires the simulation to be inactive and checks for the existence of configuration files. The endpoint updates the simulation configuration with provided battery options, validating data types and keys.\n\nSupports battery options, as indicated in [https://sumo.dlr.de/docs/sumo.html#battery](https://sumo.dlr.de/docs/sumo.html#battery)\n\n- **device.stationfinder.probability \\[float\\]:** The probability for a vehicle to have a 'stationfinder' device; _default:_ -1\n    \n- **device.stationfinder.deterministic \\[bool\\]: t**he 'stationfinder' devices are set deterministic using a fraction of 1000; _default:_ **false**\n    \n- **device.stationfinder.rescueTime** \\[long\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) Time to wait for a rescue vehicle on the road side when the battery is empty; _default:_ **1800**\n    \n- **device.stationfinder.reserveFactor** \\[float\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) Additional battery buffer for unexpected traffic situation when estimating the battery need; d_efault:_ **1.1**\n    \n- **device.stationfinder.emptyThreshold** \\[float\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) Battery percentage to go into rescue mode; _default:_ **5**\n    \n- **device.stationfinder.radius** \\[long\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) Search radius in travel time seconds; _default:_ **180**\n    \n- **device.stationfinder.repeat** \\[long\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) When to trigger a new search if no station has been found; _default:_ **60**\n    \n- **device.stationfinder.maxChargePower** \\[float\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) The maximum charging speed of the vehicle battery; _default:_ **1000**\n    \n- **device.stationfinder.chargeType** \\[string\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) Type of energy transfer; _default:_ \"**charging\"**\n    \n- **device.stationfinder.waitForCharge** \\[long\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) After this waiting time vehicle searches for a new station when the initial one is blocked; _default:_ **600**\n    \n- **device.battery.probability \\[float\\]** [<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) The probability for a vehicle to have a 'battery' device; _default:_ **\\-1**\n    \n- **device.battery.deterministic** \\[bool\\][<i>: </i>](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types) The 'battery' devices are set deterministic using a fraction of 1000; _default:_ **false**\n    \n- **device.battery.track-fuel** \\[bool\\]:[](https://sumo.dlr.de/docs/Basics/Notation.html#referenced_data_types)Track fuel consumption for non-electric vehicles; _default:_ **false**\n    \n- **device.stationfinder.explicit** \\[string\\[\\]\\]_:_ Assign a 'stationfinder' device to named vehicles\n    \n- **device.battery.explicit \\[string\\[\\]\\]** _:_ Assign a 'battery' device to named vehicles"
 				},
 				{
-					"name": "/routes",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/routes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"routes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/additional_files",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/additional_files",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"additional_files"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/output_options",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"battery-output\": \"Battery.out.xml\",\r\n    \"battery-output.precision\": 4\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Update the output options",
+					"item": [
+						{
+							"name": "/output_options",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"battery-output\": \"../output/battery_out.xml\",\r\n    \"battery-output.precision\": 4\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/output_options",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"output_options"
+									]
 								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/output_options",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"output_options"
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "Updates output options for the simulation, requiring it to be inactive and configuration files to be present. It validates the provided options against allowed keys and updates the simulation configuration accordingly.\n\nSupports specifying any of the output options in [https://sumo.dlr.de/docs/sumo.html#output](https://sumo.dlr.de/docs/sumo.html#output)"
 				},
 				{
-					"name": "/battery_options",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"device.stationfinder.probability\":0.8,\r\n    \"device.stationfinder.rescueTime\":1000\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Update the network",
+					"item": [
+						{
+							"name": "/network",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "/C:/Users/david/Documents/FLC-TeamLinux/test_sim_generation/test_network.net.xml"
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/network",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"network"
+									]
 								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/battery_options",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"battery_options"
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "/network (PUT)  \nUpdates the network configuration by uploading a new XML file. It checks if the simulation is not started or running, validates the XML file, and ensures it's of the correct type (net or network). If the file is too large or not allowed, it returns an error. Otherwise, it saves the file to the specified upload folder."
 				},
 				{
-					"name": "/create_config",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/create_config",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"create_config"
-							]
+					"name": "Update the routes",
+					"item": [
+						{
+							"name": "/routes",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "/C:/Users/david/Documents/FLC-TeamLinux/test_sim_generation/test_routes.rou.xml"
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/routes",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"routes"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "/routes (PUT)  \nAllows uploading of route configurations through an XML file. Similar to the /network endpoint, it checks for simulation status, file size, and validity. Only files with the routes tag are accepted and saved to the upload folder."
+				},
+				{
+					"name": "Clear the simulation files and restore default",
+					"item": [
+						{
+							"name": "/init_simulation",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/init_simulation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"init_simulation"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add or update charging stations",
+					"item": [
+						{
+							"name": "/charging_stations",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "/C:/Users/DavideSavoia/Documents/FLC-TeamLinux/test_sim_generation/sumo.add.xml"
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/charging_stations",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"charging_stations"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "/charging_stations?reset (PUT)  \nEnables the configuration of charging stations by uploading an XML file. It checks if the simulation is inactive, handles file size and format validation, and supports resetting existing configurations by adding the new .add.xml file containing the charging stations, otherwise the endpoint appends new charging stations to the existing configuration (if reset param is not set)."
+				},
+				{
+					"name": "Get the sumo configuration file",
+					"item": [
+						{
+							"name": "/get_sumocfg",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
 				}
 			],
-			"description": "- GET /init_simulation -> initialize the environment for the (single) simulation, recreating (and eventually overwriting) the sim.'s files folder (/simulation). So in creates the layout for the:\n    \n    - simulation.edg.xml (a default test file)\n        \n    - simulation.nod.xml (a default test file)\n        \n    - simulation.net.xml (a default test file)\n        \n    - simulation.rou.xml (a default test file)\n        \n    - simulation.sumocfg (an xml-like file with inside of it the net-file, route-file and the time configuration).\n        \n- PUT /edges (upload .edg.xml)\n    \n- PUT /nodes (upload .rou.xml)\n    \n- GET /netconvert (creates the .net.xml file with the netconvert command)\n    \n- PUT /network (upload .net.xml)\n    \n- oppure più endpoint che supportino il caricamento di file in altri formati e le relative principali conversioni (netconvert) da effettuare sul server\n    \n- GET /create_random_network?iterations= (uses \"netgenerate --rand --rand.iterations=...\" to create a random .net.xml file)\n    \n- PUT /routes (overwrite existing .rou.xml file)\n    \n- PUT /additional_files\n    \n- POST /battery_options (will be updated in the .sumocfg file)\n    \n- POST /output_options (will be updated in the .sumocfg file)\n    \n- GET /create_config (check available files in the /simulation folder and generates the .sumocfg file)\n    \n\nPS. if no output is explicitly indicated from the user, a list of predefined outputs will be considered in the configuration"
+			"description": "- GET /init_simulation -> initialize the environment for the (single) simulation, recreating (and eventually overwriting) the sim.'s files folder (/simulation). So in creates the layout for the:\n    \n    - sumo.net.xml (a default test file)\n        \n    - sumo.rou.xml (a default test file)\n        \n    - sumo.add.xml (a default test file)\n        \n    - sumo.sumocfg (an xml-like file with inside of it the net-file, route-file and the time configuration).\n        \n- PUT /network (upload .net.xml)\n    \n- PUT /routes (overwrite existing .rou.xml file)\n    \n- PUT /charging_stations?reset (upload .xml file)\n    \n- POST /battery_options (will be updated in the .sumocfg file)\n    \n- POST /output_options (will be updated in the .sumocfg file)\n    \n\nPS. if no output is explicitly indicated from the user, a list of predefined outputs will be considered in the configuration"
 		},
 		{
 			"name": "Start Simulation",
 			"item": [
 				{
-					"name": "/start_simulation",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/start_simulation?begin&end&step_length&n_steps",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"start_simulation"
-							],
-							"query": [
-								{
-									"key": "begin",
-									"value": null
+					"name": "Start the simulation",
+					"item": [
+						{
+							"name": "/start_simulation",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "xml"
+										}
+									}
 								},
-								{
-									"key": "end",
-									"value": null
-								},
-								{
-									"key": "step_length",
-									"value": null
-								},
-								{
-									"key": "n_steps",
-									"value": null
+								"url": {
+									"raw": "{{baseUrl}}/start_simulation?begin=2&end=5&step_duration=3&n_steps=4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"start_simulation"
+									],
+									"query": [
+										{
+											"key": "begin",
+											"value": "2"
+										},
+										{
+											"key": "end",
+											"value": "5"
+										},
+										{
+											"key": "step_duration",
+											"value": "3"
+										},
+										{
+											"key": "n_steps",
+											"value": "4"
+										}
+									]
 								}
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "/start_simulation (GET)  \nStarts the simulation with specified parameters such as beginning time, end time, step duration, and number of steps. It checks for configuration file presence and returns an error if another simulation is already running or if configuration files are missing.\n\nIf everything is fine, it performs the specified number of steps."
 				},
 				{
-					"name": "/next_step",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/next_steps?n",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"next_steps"
-							],
-							"query": [
-								{
-									"key": "n",
-									"value": null
+					"name": "Perform more steps",
+					"item": [
+						{
+							"name": "/next_step",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/next_step?n=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"next_step"
+									],
+									"query": [
+										{
+											"key": "n",
+											"value": "5"
+										}
+									]
 								}
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "/next_step (GET)  \nAdvances the simulation by a specified number of steps (n). It requires the simulation to be initialized and not busy. Returns an error if the simulation is not in a state to proceed with the next steps."
 				},
 				{
-					"name": "/stop_simulation",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "/stop_simulation",
-							"path": [
-								"stop_simulation"
-							]
+					"name": "Stop the simulation",
+					"item": [
+						{
+							"name": "/stop_simulation",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/stop_simulation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"stop_simulation"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"description": "/stop_simulation (GET)  \nStops the currently running simulation. It checks if the simulation instance exists and is in a state that allows stopping. Returns a message indicating whether the simulation was successfully stopped or not."
+				},
+				{
+					"name": "Get the current status of the simulation",
+					"item": [
+						{
+							"name": "/status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "/status (GET)  \nProvides the current status of the simulation, indicating whether it has started and if it is currently running."
 				}
 			],
-			"description": "These APIs will start the simulation\n\n- GET /start_sim?begin=&end=&time_step=&step_size - start the simulation doing only the first step (if step_size=1), otherwise, computes N steps, with a value of -1 computes the simulation until the end of it (if end is specified)\n    \n- GET /next_step?n - do the n following steps of the sim.\n    \n- GET /stop_simulation - stops the simulation run (close)"
+			"description": "These APIs do manage the simulation flow:\n\n- GET /start_sim?begin=&end=&step_duration=&n_steps- start the simulation doing only the first step (if n_steps=1), otherwise, computes N steps, with a value of -1 computes the simulation until the end of it (if end is specified)\n    \n- GET /next_step?n - do the n following steps of the sim.\n    \n- GET /status - returns the actual status of the simulation\n    \n- GET /stop_simulation - stops the simulation run (close)"
 		},
 		{
 			"name": "Output Management",
 			"item": [
-				{
-					"name": "/output/filename",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "/output/<filename>",
-							"path": [
-								"output",
-								"<filename>"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "/outputs",
 					"protocolProfileBehavior": {
@@ -325,7 +347,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -333,16 +355,39 @@
 							}
 						},
 						"url": {
-							"raw": "/outputs",
+							"raw": "{{baseUrl}}/outputs?statistic_output&net_state_dump",
+							"host": [
+								"{{baseUrl}}"
+							],
 							"path": [
 								"outputs"
+							],
+							"query": [
+								{
+									"key": "statistic_output",
+									"value": null
+								},
+								{
+									"key": "charging_stations",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "emission_output",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "net_state_dump",
+									"value": null
+								}
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"description": "These APIs allow to return the output files from the Simulation, they can be requested anytime during the execution (ex. at time step=10)"
+			"description": "These APIs allow to return the output files from the Simulation, they can be requested anytime during the execution (ex. at time step=10)\n\n- GET /outputs - returns a list of predifined outputs at the current step of the simulation. They include:\n    \n- raw dump, with info about vehicles positions;\n    \n- emission output, with info about electrical/fuel vehicles emissions;\n    \n- statistic output, with general statistics of the simulation like the number of vehicles inserted/waiting, average speeds, traffic and public transport statistics;\n    \n- charging station output, with info about charging stations like power, efficiency, number of recharged vehicles and delivered energy."
 		}
 	],
 	"event": [
