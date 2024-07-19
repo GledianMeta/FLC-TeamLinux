@@ -18,7 +18,7 @@ The simulation can be started and stopped at any time, <b> but the output files 
 In order to make them available anywhere with a really simple deployment procedure. the simulation tools have been encapsulated in a Docker container defined in the <a href="https://github.com/GledianMeta/FLC-TeamLinux/blob/main/Dockerfile">Dockerfile</a>. In this way, any user with a Docker engine running on it's computer will be able to reach and use these tools over it's local IP address, at port 8080.
 Steps for configuration:
 1. Clone this repository in your working directory ```git clone https://github.com/GledianMeta/FLC-TeamLinux```;
-2. With a running docker engine, execute ```docker build -t <TAG_NAME_YOU_PREFER>``` to build the container (it will take a while);
+2. With a running docker engine, execute ```docker build -t <TAG_NAME_YOU_PREFER> .``` to build the container (it will take a while);
 3. To start the container, use ```docker run -p 8080:8080 [-d/-it] <TAG_NAME_YOU_PREFER>``` (-it is for interactive output, while -d means "detach output from stdout").
 
 
