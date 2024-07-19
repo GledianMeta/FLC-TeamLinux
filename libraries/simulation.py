@@ -36,7 +36,7 @@ class Simulation:
             raise ValueError("The begin time must be positive!")
         if end is not None:
             if end > begin:
-                cmd.append("-e")  # TODO: This end parameter seems not to work (SUMO bug?)
+                cmd.append("-e")
                 cmd.append(f"{end}")
                 self.n_steps = end - begin
             else:  # if end is less than begin, raise an error
@@ -55,16 +55,12 @@ class Simulation:
 
     # Method which will be called to stop the simulation
     def stop_simulation(self):
-        """
-        Closes the libsumo simulation in both cases: when the simulations steps have been done and you  want to restart the simulation, or
-        :return:
-        """
+        # Closes the libsumo simulation in both cases: when the simulations steps have been done,
+        # and you want to restart the simulation, or when you want to stop the running simulation.
         if not self.is_started():
             return False
         try:
-            # if the simulation is running, acquire the second semaphore, so that the running sim's Thread will not read the wrong
-            # "self.kill_thread" value and will wait to read a True value, so it will break and release also the first semaphore
-            # TODO: is it better to avoid false read or allowing unwanted simulation Steps?
+            # If the simulation is busy, set the kill_thread flag to True, so that the thread
             if self.is_busy():
                 self.kill_thread = True
             libsumo.close()
@@ -95,10 +91,9 @@ class Simulation:
                 else:  # if kill_thread==True, kill the thread by breaking from the loop, and set the kill_thread back to False
                     self.kill_thread = False
                     break
-        # This ensures that when all cars are done, or if something goes wrong, the track (semaphore) is free for someone else to use
         finally:
             self.exec_semaphore.release()
-            # Ensure semaphore is released even if an exception occurs
+            # This ensures that when all cars are done, or if something goes wrong, the track (semaphore) is free for someone else to use
 
     def execute_all_steps(self):
         if self.is_busy():
@@ -119,7 +114,6 @@ class Simulation:
 
     def is_busy(self):
         return self.exec_semaphore._value == 0  # If Semaphore counts 0 indicates some computation is done
-        # return threading.thread_count.....
 
     def is_started(self):
         return self.simulation_started

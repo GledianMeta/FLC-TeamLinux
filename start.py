@@ -1,8 +1,7 @@
-# import logging
 import os
 import xmlschema
 from flask import Flask, request, make_response, jsonify
-from os import path, listdir, mkdir
+from os import path, listdir
 import gzip
 import xml.etree.ElementTree as ET
 import xmltodict
