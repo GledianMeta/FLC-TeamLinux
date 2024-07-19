@@ -53,7 +53,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"battery-output\": \"../output/battery_out.xml\",\r\n    \"battery-output.precision\": 4\r\n}",
+									"raw": "{\r\n    \"battery-output\":\"battery-output.xml\",\r\n    \"battery-output.precision\": 4,\r\n    \"chargingstations-output\": \"chargingstations.xml\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -86,7 +86,7 @@
 								"body": {
 									"mode": "file",
 									"file": {
-										"src": "/C:/Users/david/Documents/FLC-TeamLinux/test_sim_generation/test_network.net.xml"
+										"src": "/C:/Users/DavideSavoia/Documents/FLC-TeamLinux/test/net.net.xml"
 									}
 								},
 								"url": {
@@ -115,7 +115,7 @@
 								"body": {
 									"mode": "file",
 									"file": {
-										"src": "/C:/Users/david/Documents/FLC-TeamLinux/test_sim_generation/test_routes.rou.xml"
+										"src": "/C:/Users/DavideSavoia/Documents/FLC-TeamLinux/test/input_routes.rou.xml"
 									}
 								},
 								"url": {
@@ -166,7 +166,7 @@
 								"body": {
 									"mode": "file",
 									"file": {
-										"src": "/C:/Users/DavideSavoia/Documents/FLC-TeamLinux/test_sim_generation/sumo.add.xml"
+										"src": "/C:/Users/DavideSavoia/Documents/FLC-TeamLinux/test/input_additional.add.xml"
 									}
 								},
 								"url": {
@@ -191,7 +191,16 @@
 							"name": "/get_sumocfg",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/get_sumocfg",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"get_sumocfg"
+									]
+								}
 							},
 							"response": []
 						}
