@@ -21,7 +21,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"device.stationfinder.probability\":0.8,\r\n    \"device.stationfinder.rescueTime\":1000\r\n}",
+									"raw": "{\r\n    \"device.battery.probability\":1\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -233,7 +233,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/start_simulation?begin=2&end=5&step_duration=3&n_steps=4",
+									"raw": "{{baseUrl}}/start_simulation?begin=&end=&n_steps=&step_duration=",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -243,19 +243,19 @@
 									"query": [
 										{
 											"key": "begin",
-											"value": "2"
+											"value": ""
 										},
 										{
 											"key": "end",
-											"value": "5"
-										},
-										{
-											"key": "step_duration",
-											"value": "3"
+											"value": ""
 										},
 										{
 											"key": "n_steps",
-											"value": "4"
+											"value": ""
+										},
+										{
+											"key": "step_duration",
+											"value": ""
 										}
 									]
 								}
@@ -263,7 +263,7 @@
 							"response": []
 						}
 					],
-					"description": "/start_simulation (GET)  \nStarts the simulation with specified parameters such as beginning time, end time, step duration, and number of steps. It checks for configuration file presence and returns an error if another simulation is already running or if configuration files are missing.\n\nIf everything is fine, it performs the specified number of steps."
+					"description": "/start_simulation (GET)  \nStarts the simulation with specified parameters such as beginning time, end time, step duration, and number of steps. It checks for configuration file presence and returns an error if another simulation is already running or if configuration files are missing.\n\nQuery parameters:\n\n- begin: the beginning of the simulation;\n    \n- end: the end of the simulation. Please note that if set, overwrites the n_steps value with end-begin;\n    \n- time_step: the time step of the simulation;\n    \n- n_steps: the number of steps to compute;"
 				},
 				{
 					"name": "Perform more steps",
