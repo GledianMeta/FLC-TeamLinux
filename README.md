@@ -92,14 +92,14 @@ Steps for configuration:
 ### GET /start_sim
 - starts the simulation doing only the first N steps (if step_size=N), otherwise, computes 1 step (if step_size is not specified) or all the steps of the simulation (if step_size=-1)
 - query parameters:
-    - begin: the beginning of the simulation
-    - end: the end of the simulation
-    - time_step: the time step of the simulation
-    - step_size: the number of steps to compute
+    - begin: the beginning of the simulation;
+    - end: the end of the simulation. Please note that if set, overwrites the n_steps value with end-begin;
+    - time_step: the time step of the simulation;
+    - n_steps: the number of steps to compute;
 - returns:
-    - 200 OK: if the simulation is started successfully
-    - 400 Bad Request: if the simulation has already been started or if the query parameters are not correct
-    - 500 Internal Server Error: if the simulation fails to start
+    - 200 OK: if the simulation is started successfully;
+    - 400 Bad Request: if the simulation has already been started or if the query parameters are not correct;
+    - 500 Internal Server Error: if the simulation fails to start;
 
 ### GET /next_step
 - performs the next N steps of the simulation or all the remaining steps (if N=-1)
