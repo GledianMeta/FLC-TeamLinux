@@ -94,7 +94,7 @@ Steps for configuration:
 - query parameters:
     - begin: the beginning of the simulation;
     - end: the end of the simulation. Please note that if set, overwrites the n_steps value with end-begin;
-    - time_step: the time step of the simulation;
+    - step_duration: the time step of the simulation;
     - n_steps: the number of steps to compute;
 - returns:
     - 200 OK: if the simulation is started successfully;
