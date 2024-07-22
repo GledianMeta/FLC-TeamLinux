@@ -129,7 +129,7 @@ Steps for configuration:
 ## Output Management
 
 ### GET /outputs
-- returns the predefined outputs and the output requested by the user (using POST /output_options) at the end of the simulation
+- returns the available output options (default ones plus the ones specified by the user with the POST /output_option) 
 - returns:
     - 200 OK: if the outputs are returned successfully
     - 400 Bad Request: if the simulation has been started and not stopped yet
